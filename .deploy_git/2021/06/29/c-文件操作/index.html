@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="打开文件fopen函数的用法在C语言中，对文件操作之前，首先需要打开文件，使用的函数是fopen函数，它的作用是打开文件，获取该文件的文件指针，方便后续操作。函数原型为:  1FILE *fopen(const char *filename, const char *mode);  可以看得出来，该函数需要两个字符串类型的参数，第一个是文件名，既要操作的文件对象。第二个是打开方式，这里的打开方式只">
+<meta property="og:type" content="article">
+<meta property="og:title" content="别碰我的柠檬">
+<meta property="og:url" content="http://example.com/2021/06/29/c-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/index.html">
+<meta property="og:site_name" content="别碰我的柠檬">
+<meta property="og:description" content="打开文件fopen函数的用法在C语言中，对文件操作之前，首先需要打开文件，使用的函数是fopen函数，它的作用是打开文件，获取该文件的文件指针，方便后续操作。函数原型为:  1FILE *fopen(const char *filename, const char *mode);  可以看得出来，该函数需要两个字符串类型的参数，第一个是文件名，既要操作的文件对象。第二个是打开方式，这里的打开方式只">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-06-29T01:29:39.699Z">
+<meta property="article:modified_time" content="2021-06-29T02:00:44.666Z">
+<meta property="article:author" content="FBC">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/06/29/c-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2021/06/29/c-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/","path":"2021/06/29/c-文件操作/","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | 别碰我的柠檬</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">别碰我的柠檬</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">芒果</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6fopen%E5%87%BD%E6%95%B0%E7%9A%84%E7%94%A8%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">打开文件fopen函数的用法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E6%96%87%E4%BB%B6fprintf%E5%87%BD%E6%95%B0%E7%9A%84%E7%94%A8%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">写文件fprintf函数的用法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E6%96%87%E4%BB%B6fscanf%E5%87%BD%E6%95%B0%E7%9A%84%E7%94%A8%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">读文件fscanf函数的用法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E6%96%87%E4%BB%B6fwrite%E5%87%BD%E6%95%B0%E7%9A%84%E7%94%A8%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">写文件fwrite函数的用法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E6%96%87%E4%BB%B6fread%E5%87%BD%E6%95%B0%E7%9A%84%E7%94%A8%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">读文件fread函数的用法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E6%96%87%E4%BB%B6fclose%E5%87%BD%E6%95%B0%E7%9A%84%E7%94%A8%E6%B3%95"><span class="nav-number">6.</span> <span class="nav-text">关闭文件fclose函数的用法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E4%B8%80%E4%B8%AA%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="nav-number"></span> <span class="nav-text">加一个位运算</span></a></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">FBC</p>
+  <div class="site-description" itemprop="description">仅供学习</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/29/c-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="FBC">
+      <meta itemprop="description" content="仅供学习">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="别碰我的柠檬">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-06-29 09:29:39 / Modified: 10:00:44" itemprop="dateCreated datePublished" datetime="2021-06-29T09:29:39+08:00">2021-06-29</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h4 id="打开文件fopen函数的用法"><a href="#打开文件fopen函数的用法" class="headerlink" title="打开文件fopen函数的用法"></a>打开文件fopen函数的用法</h4><p>在C语言中，对文件操作之前，首先需要打开文件，使用的函数是fopen函数，它的作用是打开文件，获取该文件的文件指针，方便后续操作。函数原型为: </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">FILE *<span class="title">fopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *filename, <span class="keyword">const</span> <span class="keyword">char</span> *mode)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>可以看得出来，该函数需要两个字符串类型的参数，第一个是文件名，既要操作的文件对象。第二个是打开方式，这里的打开方式只是，对文件以何种模式打开，包括文本模式打开还是二进制打开、是读还是写还是追加等等等等,具体类型如下表，可以根据情况使用：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>r</td>
+<td>以只读方式打开文件，该文件必须存在。</td>
+</tr>
+<tr>
+<td>r+</td>
+<td>以读/写方式打开文件，该文件必须存在。</td>
+</tr>
+<tr>
+<td>rb+</td>
+<td>以读/写方式打开一个二进制文件，只允许读/写数据。</td>
+</tr>
+<tr>
+<td>rt+</td>
+<td>以读/写方式打开一个文本文件，允许读和写。</td>
+</tr>
+<tr>
+<td>w</td>
+<td>打开只写文件，若文件存在则文件长度清为零，即该文件内容会消失；若文件不存在则创建该文件。</td>
+</tr>
+<tr>
+<td>w+</td>
+<td>打开可读/写文件，若文件存在则文件长度清为零，即该文件内容会消失；若文件不存在则创建该文件。</td>
+</tr>
+<tr>
+<td>a</td>
+<td>以附加的方式打开只写文件。若文件不存在，则会创建该文件；如果文件存在，则写入的数据会被加到文件尾后，即文件原先的内容会被保留（EOF 符保留）。</td>
+</tr>
+<tr>
+<td>a+</td>
+<td>以附加方式打开可读/写的文件。若文件不存在，则会创建该文件，如果文件存在，则写入的数据会被加到文件尾后，即文件原先的内容会被保留（EOF符不保留）。</td>
+</tr>
+<tr>
+<td>wb</td>
+<td>以只写方式打开或新建一个二进制文件，只允许写数据。</td>
+</tr>
+<tr>
+<td>wb+</td>
+<td>以读/写方式打开或新建一个二进制文件，允许读和写。</td>
+</tr>
+<tr>
+<td>wt+</td>
+<td>以读/写方式打开或新建一个文本文件，允许读和写。</td>
+</tr>
+<tr>
+<td>at+</td>
+<td>以读/写方式打开一个文本文件，允许读或在文本末追加数据。</td>
+</tr>
+<tr>
+<td>ab+</td>
+<td>以读/写方式打开一个二进制文件，允许读或在文件末追加数据。</td>
+</tr>
+</tbody></table>
+<p>函数的返回值则表示打开成功后的文件指针，格式为FILE类型，是一个结构体类型，供后面使用，如果打开失败，则返回NULL</p>
+<p>FILE结构体类型虽用不到，但可以了解，定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span> </span><br><span class="line">　　<span class="keyword">int</span> level;　　　　　　　　　　　``<span class="comment">/* fill/empty level of buffer */</span></span><br><span class="line">　　<span class="keyword">unsigned</span> flags; 　　　　　 ``<span class="comment">/* File status flags */</span></span><br><span class="line">　　<span class="keyword">char</span> fd;　　　　　　　　　　　 ``<span class="comment">/* File descriptor */</span></span><br><span class="line">　　<span class="keyword">unsigned</span> <span class="keyword">char</span> hold;　　　　 ``<span class="comment">/* Ungetc char if no buffer */</span></span><br><span class="line">　　<span class="keyword">int</span> bsize;　　　　　　　　　　 ``<span class="comment">/* Buffer size */</span></span><br><span class="line">　　<span class="keyword">unsigned</span> <span class="keyword">char</span> _FAR *buffer;　``<span class="comment">/* Data transfer buffer */</span></span><br><span class="line">　　<span class="keyword">unsigned</span>  <span class="keyword">char</span> _FAR *curp;　　``<span class="comment">/* Current active pointer */</span></span><br><span class="line">　　<span class="keyword">unsigned</span> istemp;　　　　　　``<span class="comment">/* Temporary file indicator */</span></span><br><span class="line">　　<span class="keyword">short</span> token;　　　　　　　　 ``<span class="comment">/* Used for validity checking */</span></span><br><span class="line">&#125;FILE;　　　　　　　　　　　　 ``<span class="comment">/* This is the FILE object */</span></span><br></pre></td></tr></table></figure>
+
+<p>比如，如果我们现在想打开一个D盘根目录下的abc.dat，并且想读出该文件里的数据，那么我们可以这样写：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FILE *fp;</span><br><span class="line">fp=fopen(<span class="string">&quot;d:\\abc.dat&quot;</span>,<span class="string">&quot;r&quot;</span>)</span><br><span class="line"><span class="comment">//后面通过fp指针开始读文件</span></span><br></pre></td></tr></table></figure>
+
+<p>值得说明的是</p>
+<p>1.该文件的目录是绝对路径，因此这样写，如果不写盘符比如abc.dat则表示相对路径，表示与本程序同目录下。</p>
+<p>2.路径中的反斜杠虽然只有一个，但这里打了两个，原因在于C语言字符串中对反斜杠要当作转义字符处理，因此要用两个反斜杠才能表示一个。</p>
+<p>3.一旦以r也就是只读的方式打开文件，后面则不允许写数据，否则会出错，一定要保持一致！</p>
+<h4 id="写文件fprintf函数的用法"><a href="#写文件fprintf函数的用法" class="headerlink" title="写文件fprintf函数的用法"></a>写文件fprintf函数的用法</h4><p>我们学会了打开文件之后，如果打开模式是写，那么可以用fprintf函数来进行写，下面来介绍fprintf函数，它的原型是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fprintf</span> <span class="params">(FILE* stream, <span class="keyword">const</span> <span class="keyword">char</span>*format, [argument])</span></span></span><br></pre></td></tr></table></figure>
+
+<p>该函数是一个格式化写入的库函数，可以看到，除了长得和printf函数很像以外，参数也非常像，多了一个第一个参数，文件指针，即第一步打开文件时得到的文件指针，后面的参数和printf一样，按照指定的格式将数据写入文件。例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">fprintf</span>(fp,<span class="string">&quot;%s&quot;</span>,<span class="string">&quot;www.fbc123.com&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这句代码的意思是将字符串”<a target="_blank" rel="noopener" href="http://www.fbc123.com&quot;/">www.fbc123.com&quot;</a> 以%s的格式写入fp所指向的文件中</p>
+<table>
+<thead>
+<tr>
+<th>控制符</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>%c</td>
+<td>字符</td>
+</tr>
+<tr>
+<td>%d 或 %i</td>
+<td>有符号十进制整数</td>
+</tr>
+<tr>
+<td>%e</td>
+<td>使用 e 字符的科学科学记数法（尾数和指数）</td>
+</tr>
+<tr>
+<td>%E</td>
+<td>使用 E 字符的科学科学记数法（尾数和指数）</td>
+</tr>
+<tr>
+<td>%f</td>
+<td>十进制浮点数</td>
+</tr>
+<tr>
+<td>%g</td>
+<td>自动选择 %e 或 %f 中合适的表示法</td>
+</tr>
+<tr>
+<td>%G</td>
+<td>自动选择 %E 或 %f 中合适的表示法</td>
+</tr>
+<tr>
+<td>%o</td>
+<td>有符号八进制</td>
+</tr>
+<tr>
+<td>%s</td>
+<td>字符的字符串</td>
+</tr>
+<tr>
+<td>%u</td>
+<td>无符号十进制整数</td>
+</tr>
+<tr>
+<td>%x</td>
+<td>无符号十六进制整数</td>
+</tr>
+<tr>
+<td>%X</td>
+<td>无符号十六进制整数（大写字母）</td>
+</tr>
+<tr>
+<td>%p</td>
+<td>指针地址</td>
+</tr>
+<tr>
+<td>%n</td>
+<td>无输出</td>
+</tr>
+<tr>
+<td>%</td>
+<td>字符</td>
+</tr>
+</tbody></table>
+<p>更多的格式可以参照printf中的格式，可以通用</p>
+<p>而返回值为整型，如果写入成功则返回写入字符的格式，否则返回一个负数。</p>
+<p>需要注意理解的是，fprintf函数虽然和printf函数很像，表示输出，但准确说是是写入的意思，是指程序向文件里写，要清楚数据的流向。</p>
+<h4 id="读文件fscanf函数的用法"><a href="#读文件fscanf函数的用法" class="headerlink" title="读文件fscanf函数的用法"></a>读文件fscanf函数的用法</h4><p>如同printf与scanf的关系一样，fprintf和fscanf也是如此，fprintf负责向文件里写数据，fscanf函数则可以从文件里读数据</p>
+<p>它的函数原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fscanf</span><span class="params">(FILE *stream, <span class="keyword">char</span> *format[,argument...])</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>作为格式化写数据函数，它的参数同样比scanf也多一个参数，即第一个参数文件指针，表示读取的文件目标，其余参数和scanf一样，按照相应的格式进行读取，返回值表示读取数据的字节数。比如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> str[<span class="number">100</span>];</span><br><span class="line"><span class="built_in">fscanf</span>(fp,<span class="string">&quot;%s&quot;</span>,str);</span><br></pre></td></tr></table></figure>
+
+<p>则表示从fp所指向的文件中进行读数据，与空格或换行结束，将结果保存到str数组中</p>
+<p>更多scanf的格式如下表：</p>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>%d</td>
+<td>读入一个十进制整数</td>
+</tr>
+<tr>
+<td>%i</td>
+<td>读入十进制，八进制，十六进制整数，与%d类似，但是在编译时通过数据前置或后置来区分进制，如加入“0x”则是十六进制，加入“0”则为八进制。例如串“031”使用%d时会被算作31，但是使用%i时会算作25</td>
+</tr>
+<tr>
+<td>%u</td>
+<td>读入一个无符号十进制整数</td>
+</tr>
+<tr>
+<td>%f %F %g %G</td>
+<td>用来输入实数，可以用小数形式或指数形式输入</td>
+</tr>
+<tr>
+<td>%x %x</td>
+<td>读入十六进制整数</td>
+</tr>
+<tr>
+<td>%o</td>
+<td>读入八进制整数</td>
+</tr>
+<tr>
+<td>%s</td>
+<td>直到遇到一个空格字符（空格字符可以是空白、换行和制表符）。</td>
+</tr>
+<tr>
+<td>%c</td>
+<td>单个字符：读取下一个字符。如果指定了一个不为 1 的宽度 width，函数会读取 width 个字符，并通过参数传递，把它们存储在数组中连续位置。在末尾不会追加空字符。</td>
+</tr>
+</tbody></table>
+<h4 id="写文件fwrite函数的用法"><a href="#写文件fwrite函数的用法" class="headerlink" title="写文件fwrite函数的用法"></a>写文件fwrite函数的用法</h4><p>fwrite函数是写文件的函数，它的函数原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">size_t</span> <span class="title">fwrite</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> size, <span class="keyword">size_t</span> nmemb, FILE *stream)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到这个函数的参数有四个:</p>
+<p>第一个ptr是要写入的数据的头指针，无符号类型；</p>
+<p>第二个参数size是大小，表示每个写入元素的大小，单位是字节；</p>
+<p>第三个参数nmemb是个数，以上一个参数为单位的个数；</p>
+<p>第四个参数stream就是文件指针，表示往哪里写。</p>
+<p>至于返回值，如果成功执行，则返回写入元素的个数，如果不和nmemb相等，则表示出错。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> <span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   FILE *fp;   </span><br><span class="line">   <span class="keyword">char</span> str[] = <span class="string">&quot;www.fbc123.com&quot;</span>; </span><br><span class="line">   fp = fopen( <span class="string">&quot;fbc123.dat&quot;</span> , <span class="string">&quot;w&quot;</span> );   </span><br><span class="line">   fwrite(str, <span class="keyword">sizeof</span>(str) , <span class="number">1</span>, fp ); </span><br><span class="line">   fclose(fp);  </span><br><span class="line">   <span class="keyword">return</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如代码所示，程序运行后，并不会在屏幕上有任何显示，而是将str中的字符串写入了fbc123.dat这个文件中，待程序运行结束退出后，大家可以打开程序同级目录下的fbc123.dat文件对比</p>
+<h4 id="读文件fread函数的用法"><a href="#读文件fread函数的用法" class="headerlink" title="读文件fread函数的用法"></a>读文件fread函数的用法</h4><p>与fwrite是一对，读文件的函数fread的函数原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">size_t</span> <span class="title">fread</span><span class="params">(<span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> size, <span class="keyword">size_t</span> nmemb, FILE *stream)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>fread函数的作用是从文件里读内容到程序中，它的参数意思是：</p>
+<p>第一个参数ptr表示盛放内容的首地址</p>
+<p>第二个参数size表示每个元素的大小，单位还是字节</p>
+<p>第三个参数nmem表示要读取的元素个数</p>
+<p>第四个参数stream表示的是文件指针，即从哪个文件中读取</p>
+<p>返回值则是表示读取元素的个数，与nmemb一致表示读取成功，否则失败</p>
+<p>实例代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span>  </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   FILE *fp;</span><br><span class="line">   <span class="keyword">char</span> buffer[<span class="number">100</span>];</span><br><span class="line">   <span class="comment">/* 首先打开文件，读写都可以，假设文件中已经有内容为www.fbc123.com */</span></span><br><span class="line">   fp = fopen(<span class="string">&quot;fbc123.dat&quot;</span>, <span class="string">&quot;w+&quot;</span>); </span><br><span class="line">     <span class="comment">/* 读取并显示数据 */</span></span><br><span class="line">   fread(buffer, <span class="number">1</span>, <span class="number">15</span>, fp);</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, buffer);</span><br><span class="line">   fclose(fp);   </span><br><span class="line">   <span class="keyword">return</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>需要注意文件的打开方式，以及保证文件中有数据，并且buffer空间足够大才可以，大家可以上机实验</p>
+<h4 id="关闭文件fclose函数的用法"><a href="#关闭文件fclose函数的用法" class="headerlink" title="关闭文件fclose函数的用法"></a>关闭文件fclose函数的用法</h4><p>对于文件操作的最后一步，这一步的作用主要是断开程序与文件关联，切断IO数据流，释放文件不在占用，结束文件按操作</p>
+<p>这一步的操作很简单，用fclose函数完成。如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fclose</span><span class="params">( FILE *fp )</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>其中fp为第一步fopen时成功打开文件后的文件指针；返回值为整型，如成功关闭则返回0，失败则返回-1</p>
+<p>如果本步骤不执行，前面的读写文件，可能不会有效果。同时，对win7系统之前，如若不执行本步骤，当试图再次修改如移动打开等操作这个文件的时候就会蹦出“无法修改该文件，该文件已经被xxx打开”的提示，这下我们明白是什么原因了！</p>
+<h3 id="加一个位运算"><a href="#加一个位运算" class="headerlink" title="加一个位运算"></a>加一个位运算</h3><p>与其他运算符不同，C语言中位运算，顾名思义，是以数值的二进制位为单位进行操作的，包含&lt;&lt;（左移）、&gt;&gt;（右移）、~（按位取反）、&amp;（按位与）、|（按位或）、^(按位异或) 共六种运算符。</p>
+<table>
+<thead>
+<tr>
+<th>左移运算符   &lt;&lt;</th>
+<th>向左（即高位）移位，右侧补0</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>右移运算符   &gt;&gt;</td>
+<td>向右（即低位）移位，左侧补0</td>
+</tr>
+<tr>
+<td>按位取反     ~</td>
+<td>如名，即0变1,1变0</td>
+</tr>
+<tr>
+<td>按位与      &amp;</td>
+<td>相对应的两个位都为1则为1，反之为0</td>
+</tr>
+<tr>
+<td>按位或      |</td>
+<td>相对应的两个位至少有一个为1即为1，反之为0</td>
+</tr>
+<tr>
+<td>按位异或    ^</td>
+<td>相对应的两个位相同为0，相异（不同）为1</td>
+</tr>
+</tbody></table>
+<p>&lt;&lt;和&gt;&gt;运算符，通过箭头方向可以很好的辨别，分别是C语言位运算符中的左移运算符和右移运算符，如表达式13&lt;&lt;2，它的运算过程为：13的用二进制（四个字节，不考虑符号）表示为，0000 0000 0000 0000 0000 0000 0000 1101，那么向左移两位，右侧补0，则变为0000 0000 0000 0000 0000 0000 0011 0100 换成十进制即变为52，大家可以自行验证。</p>
+<p>同理，再举一个例子，如表达式25&gt;&gt;3，表示25的二进制位向右移三位，由</p>
+<p>0000 0000 0000 0000 0000 0000 0001 1001 变为0000 0000 0000 0000 0000 0000 0000 0011 即十进制3</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a,b;</span><br><span class="line">    a=<span class="number">13</span>&lt;&lt;<span class="number">2</span>;</span><br><span class="line">    b=<span class="number">25</span>&gt;&gt;<span class="number">3</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;a=%d,b=%d\n&quot;</span>,a,b);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a=<span class="number">52</span>,b=<span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>移位运算符的作用：</strong></p>
+<p>​    1.左移N位的本质是乘以2的N次方</p>
+<p>​    2.右移N位的本质是除以2的N次方</p>
+<p><strong>&amp;按位与运算符</strong>                </p>
+<p>按位与运算符&amp;，有点和前面学过的逻辑与（&amp;&amp;）运算符类似，只有一个&amp;，都是同为1则为1。不同的是按位相互运算。如3&amp;5，运算过程如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3</span> <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0011</span></span><br><span class="line"><span class="number">5</span> <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0101</span></span><br><span class="line">&amp; ------------------------------------------</span><br><span class="line">  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0001</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到3&amp;5的结果即十进制1</p>
+<p><strong>按位与运算符的作用:</strong></p>
+<ol>
+<li><p>清零</p>
+<p>我们可以对某一个数与0进行按位与运算，由于两个位都为1才为1，因此最终全部位都变为0，起到清零的作用</p>
+</li>
+<li><p>取指定位</p>
+<p>如某些存储场景下，“第1<del>3位表示xxxx“”，我们需要取出1</del>3位，则可以让原数值与数字7进行按位与运算，得到的结果即是原数值的1~3位的值。</p>
+</li>
+<li><p>判断奇偶</p>
+<p>可以发现，数字的奇偶取决于二进制位的最低一位是1还是0，因此只需要与1按位与运算，判断是1是0即可得知奇偶。</p>
+</li>
+</ol>
+<p><strong>|按位或运算符</strong>                </p>
+<p>|按位或运算符，同样，它也与我们前面学过的逻辑或运算符类似，只有一个竖线表示，作用位，两个对应的二进制位有一个为1结果即为1。如8|7的运算过程可以如下表示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">8</span> <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">1000</span></span><br><span class="line"><span class="number">7</span> <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0111</span></span><br><span class="line">&amp; ------------------------------------------</span><br><span class="line">  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">1111</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到最终的二进制结果换算成十进制即为15（并不是单纯8+7得来的哦！）</p>
+<p><strong>按位或运算符的作用：</strong></p>
+<ol>
+<li><p>对一个数字的指定位，置为1</p>
+<p>如“某个数字的第七位”表示开关，原先是0，需要改为1的状态，即可以将这个数字与64按位或，即可得到第七位变为1，其余位的值依旧不变。</p>
+</li>
+</ol>
+<p><strong>^按位异或运算符</strong>                </p>
+<p>^表示按位异或运算符，顾名思义，相异，即不同则为1，反之为0</p>
+<p>例如15和16进行异或运算，运算过程如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">15</span> <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">1111</span></span><br><span class="line"><span class="number">16</span> <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0001</span> <span class="number">0000</span></span><br><span class="line">^ ------------------------------------------</span><br><span class="line">   <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0000</span> <span class="number">0000</span>  <span class="number">0001</span> <span class="number">1111</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，经过按位异或运算后，其结果变成十进制应为31，大家务必弄清楚运算过程，然后再上机验证，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line">    a=<span class="number">15</span>^<span class="number">16</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;a=%d\n&quot;</span>,a);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>异或运算符的作用</strong></p>
+<p>指定位数的翻转</p>
+<p>如想对某个数字的低4位进行翻转，则可以将这个数字与15（二进制为00001111）进行按位异或运算，既可以将原数字的低四位进行翻转，即高四位不变，低四位0变1,1变0</p>
+<p>与0异或还是原值</p>
+<p>大家可以自行实验，一个数字与0进行异或，结果还是原值</p>
+<p>交换两个数字</p>
+<p>除了之前我们学习交换两个数字需要第三个变量做中介之外，如今可以通过异或运算进行，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">swap</span><span class="params">(<span class="keyword">int</span> *a,<span class="keyword">int</span> *b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (*a!=*b)</span><br><span class="line">    &#123;</span><br><span class="line">        *a=*a^*b;</span><br><span class="line">        *b=*b^*a;</span><br><span class="line">        *a=*a^*b;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a=<span class="number">5</span>;</span><br><span class="line">    <span class="keyword">int</span> b=<span class="number">5</span>;</span><br><span class="line">    swap(&amp;a,&amp;b);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;a=%d b=%d\n&quot;</span>,a,b);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//a=5 b=5</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>~取反运算符</strong>                </p>
+<p>~取反运算符，是对数值的二进制位进行取反，是第一个单目运算符，因为只有一个运算对象，运算过程是即0变为1,1变为0，非常好理解。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> a=<span class="number">1</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;~a=%u\n&quot;</span>,~a);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//~a=4294967294</span></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/29/c-%E5%B8%B8%E7%94%A8%E5%BA%93%E5%87%BD%E6%95%B0/" rel="prev" title="">
+                  <i class="fa fa-chevron-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/06/29/ctfpwn4/" rel="next" title="">
+                   <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FBC</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

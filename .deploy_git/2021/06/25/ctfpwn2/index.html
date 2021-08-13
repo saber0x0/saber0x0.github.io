@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="1学习日记2  格式化字符串   格式化占位符 格式化字符串中的占位符用于指明输出的参数值如何格式化。    字符 描述    n$ n是用这个格式说明符（specifier）显示第几个参数；这使得参数可以输出多次，使用多个格式说明符，以不同的顺序输出。  如果任意一个占位符使用了parameter，则其他所有占位符必须也使用parameter。这是POSIX扩展，不属于ISO  C。例：prin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="别碰我的柠檬">
+<meta property="og:url" content="http://example.com/2021/06/25/ctfpwn2/index.html">
+<meta property="og:site_name" content="别碰我的柠檬">
+<meta property="og:description" content="1学习日记2  格式化字符串   格式化占位符 格式化字符串中的占位符用于指明输出的参数值如何格式化。    字符 描述    n$ n是用这个格式说明符（specifier）显示第几个参数；这使得参数可以输出多次，使用多个格式说明符，以不同的顺序输出。  如果任意一个占位符使用了parameter，则其他所有占位符必须也使用parameter。这是POSIX扩展，不属于ISO  C。例：prin">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625195611418.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625200440768.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625200629787.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625200833180.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625201205824.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625201332771.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625202247694.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625203040407.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625203114779.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625203309172.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625203322743.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625203558989.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625203631401.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625203756685.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625203823867.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625203848532.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625203902464.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625203923167.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625203941475.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625204020527.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625204048786.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625204119490.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625204132422.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625204159171.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625204227122.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625204302602.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625204321373.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625204358309.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625204532029.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625204722491.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625205042187.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625205135042.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625205424699.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625205445914.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625205532518.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625205716558.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625205758688.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625205915719.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625205933444.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625205958106.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625210119072.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625210150396.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625210205114.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625210304071.png">
+<meta property="og:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625210454607.png">
+<meta property="article:published_time" content="2021-06-25T09:13:48.779Z">
+<meta property="article:modified_time" content="2021-06-25T13:07:24.319Z">
+<meta property="article:author" content="FBC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/86153/AppData/Roaming/Typora/typora-user-images/image-20210625195611418.png">
+
+
+<link rel="canonical" href="http://example.com/2021/06/25/ctfpwn2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2021/06/25/ctfpwn2/","path":"2021/06/25/ctfpwn2/","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | 别碰我的柠檬</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">别碰我的柠檬</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">芒果</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Glibc%E5%A0%86%E5%88%86%E9%85%8D%E6%9C%BA%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">Glibc堆分配机制</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">FBC</p>
+  <div class="site-description" itemprop="description">仅供学习</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/25/ctfpwn2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="FBC">
+      <meta itemprop="description" content="仅供学习">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="别碰我的柠檬">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-06-25 17:13:48 / Modified: 21:07:24" itemprop="dateCreated datePublished" datetime="2021-06-25T17:13:48+08:00">2021-06-25</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">学习日记2</span><br></pre></td></tr></table></figure>
+
+<p><strong>格式化字符串</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625195611418.png" alt="image-20210625195611418" style="zoom:60%;" />
+
+<p><strong>格式化占位符</strong></p>
+<p>格式化字符串中的占位符用于指明输出的参数值如何格式化。</p>
+<table>
+<thead>
+<tr>
+<th><strong>字符</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>n$</td>
+<td>n是用这个格式说明符（specifier）显示第几个参数；这使得参数可以输出多次，使用多个格式说明符，以不同的顺序输出。  如果任意一个占位符使用了parameter，则其他所有占位符必须也使用parameter。这是POSIX扩展，不属于ISO  C。例：printf(“%2$d %2$#x; %1$d %1$#x”,16,17) 产生”17 0x11; 16  0x10”</td>
+</tr>
+</tbody></table>
+<p> Flags可为0个或多个：</p>
+<table>
+<thead>
+<tr>
+<th><strong>字 符</strong></th>
+<th align="left"><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>+</td>
+<td align="left">总是表示有符号数值的’+’或’-‘号，缺省情况是忽略正数的符号。仅适用于数值类型。</td>
+</tr>
+<tr>
+<td>空格</td>
+<td align="left">使得有符号数的输出如果没有正负号或者输出0个字符，则前缀1个空格。如果空格与’+’同时出现，则空格说明符被忽略。</td>
+</tr>
+<tr>
+<td>-</td>
+<td align="left">左对齐。缺省情况是右对齐。</td>
+</tr>
+<tr>
+<td>#</td>
+<td align="left">对于’g’与’G’，不删除尾部0以表示精度。对于’f’,  ‘F’, ‘e’, ‘E’, ‘g’, ‘G’, 总是输出小数点。对于’o’, ‘x’, ‘X’, 在非0数值前分别输出前缀0, 0x, and  0X表示数制。</td>
+</tr>
+<tr>
+<td>0</td>
+<td align="left">如果width选项前缀以0，则在左侧用0填充直至达到宽度要求。例如printf(“%2d”,  3)输出” 3”，printf(“%02d”,  3)输出”03”。如果0与-均出现，则0被忽略，即左对齐依然用空格填充。</td>
+</tr>
+</tbody></table>
+<p><strong>格式化占位符</strong></p>
+<p>Length指出浮点型参数或整型参数的长度。可以忽略，或者是下述：</p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625200440768.png" alt="image-20210625200440768" style="zoom:50%;" />
+
+<p><strong>漏洞利用</strong></p>
+<ul>
+<li><p>读取数据 </p>
+</li>
+<li><ul>
+<li>%x</li>
+<li>%d</li>
+<li>%s</li>
+</ul>
+</li>
+<li><p>写入数据 </p>
+</li>
+<li><ul>
+<li>%n</li>
+</ul>
+</li>
+</ul>
+<p><strong>读取数据</strong></p>
+<p><strong>$操作符</strong></p>
+<p>读取一个特定的参数</p>
+<p>printf(“%3$s”, 1, “b”, “c”, 4);</p>
+<p>将显示3而不是对应顺序的1。其他例子：</p>
+<ul>
+<li>printf(“%3$d”,1,2,3);，显示3</li>
+<li>printf(“%3$d     %2$d %1$d”,1,2,3);，显示3 2 1</li>
+</ul>
+<p>读取栈上第100个dword数据</p>
+<p>$ python -c “print ‘%100$08x’” | ./print2<br> ffa3cad0</p>
+<p>通过$操作符读取任意地址数据！！！</p>
+<p><strong>写入数据</strong></p>
+<ul>
+<li><p>任意地址任意写</p>
+</li>
+<li><ul>
+<li>任意地址：$控制</li>
+<li>任意值：      %xd通过控制x改变输出的字符个数</li>
+</ul>
+</li>
+<li><p>getshell</p>
+</li>
+<li><ul>
+<li>任意地址任意写——&gt;getshell?</li>
+</ul>
+</li>
+<li><ul>
+<li>覆盖got表！！！</li>
+</ul>
+</li>
+</ul>
+<p><strong>AAR和AAW</strong></p>
+<ul>
+<li>AAR：任意地址读（arbitrary     address read）</li>
+<li>AAW：任意地址写（arbitrary     address write）</li>
+<li>能做到这两点就非常强了，重点是如何拿到shell</li>
+<li>Q：写哪些地址，写什么值进去，可以劫持控制流？</li>
+<li>A：GOT表</li>
+</ul>
+<p><strong>GOT表</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625200629787.png" alt="image-20210625200629787" style="zoom:50%;" />
+
+<p><strong>防御</strong></p>
+<ul>
+<li><p>调用约定 </p>
+</li>
+<li><ul>
+<li>caller将所有参数放在栈上</li>
+<li>callee假设所有参数都在栈上</li>
+</ul>
+</li>
+<li><p>漏洞确实存在，假设caller传的参数和callee期望的参数个数不同</p>
+</li>
+<li><p>解决方案：在caller和callee之间做验证     </p>
+</li>
+<li><ul>
+<li><p>caller一共传了多少参数？ </p>
+</li>
+<li><ul>
+<li>编译器在编译阶段可以知道</li>
+</ul>
+</li>
+<li><p>callee使用了多少参数？ </p>
+</li>
+<li><ul>
+<li>仅在运行时方可知道</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Glibc堆分配机制"><a href="#Glibc堆分配机制" class="headerlink" title="Glibc堆分配机制"></a><strong>Glibc堆分配机制</strong></h3><p><strong>堆的使用</strong></p>
+<table>
+<thead>
+<tr>
+<th><strong>分类</strong></th>
+<th><strong>函数</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>程序员应用</td>
+<td></td>
+</tr>
+<tr>
+<td>libc 函数</td>
+<td>malloc(),  realloc(), free(), brk(), mmap(), munmap()</td>
+</tr>
+<tr>
+<td>内核调用</td>
+<td>brk,  mmap, munmap</td>
+</tr>
+</tbody></table>
+<p><strong>Linux 进程布局</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625200833180.png" alt="image-20210625200833180" style="zoom:50%;" />
+
+<p>没错！又是它o(<em>￣▽￣</em>)ブ！！！</p>
+<p><strong>堆 VS 栈</strong></p>
+<ul>
+<li><p>堆 </p>
+<ul>
+<li>动态分配 </li>
+<li>对象，大缓冲区，结构体… </li>
+</ul>
+</li>
+<li><p>更慢，手动 </p>
+</li>
+<li><ul>
+<li>malloc / calloc /      recalloc / free</li>
+<li>new / delete</li>
+</ul>
+</li>
+<li><p>栈</p>
+</li>
+<li><ul>
+<li>在编译阶段就固定的内存分配</li>
+<li>局部变量，返回地址，函数地址</li>
+</ul>
+</li>
+<li><p>快，自动</p>
+</li>
+<li><ul>
+<li>编译阶段就完成</li>
+<li>抽象出分配/取消分配的概念</li>
+</ul>
+</li>
+</ul>
+<p><strong>堆的实现</strong></p>
+<p>不同的堆实现</p>
+<ul>
+<li>dlmalloc</li>
+<li>ptmalloc (glibc)</li>
+<li>tcmalloc (Chrome,     replaced)</li>
+<li>jemalloc     (Firefox/Facebook)</li>
+<li>nedmalloc</li>
+<li>Hoard</li>
+</ul>
+<p><strong>glibc的堆实现</strong></p>
+<p>chunk<br> 堆的基本单位是一个一个chunk块，chunk的结构如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">malloc_chunk</span> &#123;</span></span><br><span class="line">    INTERNAL_SIZE_T    prev_size;     <span class="comment">/* Size of previous chunk (if free).  */</span></span><br><span class="line">    INTERNAL_SIZE_T    size;          <span class="comment">/* Size in bytes, including overhead. */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">malloc_chunk</span>* <span class="title">fd</span>;</span>          <span class="comment">/* double links -- used only if free. */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">malloc_chunk</span>* <span class="title">bk</span>;</span>                                                                           / * Only used <span class="keyword">for</span> large blocks: pointer to next larger size.  */</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">malloc_chunk</span>* <span class="title">fd_nextsize</span>;</span> <span class="comment">/* double links -- used only if free. */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">malloc_chunk</span>* <span class="title">bk_nextsize</span>;</span></span><br><span class="line"> &#125;;</span><br></pre></td></tr></table></figure>
+
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625201205824.png" alt="image-20210625201205824" style="zoom:50%;" />
+
+<p><strong>chunk size</strong></p>
+<p>为了执行效率，chunk的长度会进行对齐</p>
+<ul>
+<li>32bit： （x + 4）对齐到8</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>data size</strong></th>
+<th><strong>0 ~ 4</strong></th>
+<th><strong>5 ~ 12</strong></th>
+<th><strong>13 ~ 20</strong></th>
+<th><strong>…</strong></th>
+<th><strong>53 ~ 60</strong></th>
+<th><strong>61 ~ 68</strong></th>
+<th><strong>69 ~ 76</strong></th>
+<th><strong>77 ~ 84</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>chunk  size</td>
+<td>16</td>
+<td>16</td>
+<td>24</td>
+<td>…</td>
+<td>64</td>
+<td>72</td>
+<td>80</td>
+<td>88</td>
+</tr>
+</tbody></table>
+<ul>
+<li>64bit： （x + 4）对齐到16</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>data size</strong></th>
+<th><strong>0 ~ 8</strong></th>
+<th><strong>9 ~ 24</strong></th>
+<th><strong>25 ~ 40</strong></th>
+<th><strong>…</strong></th>
+<th><strong>105 ~ 120</strong></th>
+<th><strong>121 ~ 136</strong></th>
+<th><strong>137 ~ 152</strong></th>
+<th><strong>153 ~ 168</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>chunk  size</td>
+<td>32</td>
+<td>32</td>
+<td>24</td>
+<td>…</td>
+<td>64</td>
+<td>72</td>
+<td>80</td>
+<td>88</td>
+</tr>
+</tbody></table>
+<p><strong>In used chunk</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625201332771.png" alt="image-20210625201332771" style="zoom:50%;" />
+
+<ul>
+<li>如果前面的chunk是使用状态，prev_size则属于前一个堆块。</li>
+<li>prev_in_use表明前一个堆块是否free状态（且不在fastbins内）</li>
+<li>is_mmaped说明内存来自于mmap()</li>
+<li>non_main_arena表明该堆块由非主线程分配</li>
+</ul>
+<p><strong>free chunk</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625202247694.png" alt="image-20210625202247694" style="zoom:50%;" />
+
+<p>如果前面的chunk是空闲状态，prev_size则记录前面chunk的大小。</p>
+<p>下一个堆块的prev_size记录本堆块的大小。</p>
+<p>其中，size不同于pre_size的是，size中的低三位作为flag。</p>
+<ul>
+<li>最低位:前一个 chunk         是否正在使用</li>
+<li>倒数第二位:当前 chunk     是否是通过 mmap 方式产生的</li>
+<li>倒数第三位:这个 chunk     是否属于一个线程的 arena<br>需要注意的是，如果该free chunk落在fastbin中，这些数据将不会被设置。</li>
+</ul>
+<p><strong>chunk</strong></p>
+<ul>
+<li><p>正在被使用的chunk </p>
+</li>
+<li><ul>
+<li>被程序的数据指针指向</li>
+<li>长度是对于chunk本身是可知的</li>
+<li>free()因此得以工作</li>
+</ul>
+</li>
+<li><p>free状态的chunk </p>
+</li>
+<li><ul>
+<li>不再被程序指向</li>
+<li>稍后会被重复使用来回应内存分配</li>
+<li>需要有效的组织管理free  chunk以便于maclloc()来分配</li>
+<li>how？</li>
+</ul>
+</li>
+</ul>
+<p><strong>free chunks的组织管理</strong></p>
+<ul>
+<li><p>链表，通常的，一个链表拥有的chunk长度相同     </p>
+</li>
+<li><ul>
+<li>需要多个链表</li>
+<li>以管理不同长度的chunk</li>
+<li>单链表或双向链表</li>
+<li>链表被分组为几个BINs</li>
+<li>fastbins,unsorted_bin,smallbins,largebins</li>
+</ul>
+</li>
+</ul>
+<p><strong>Arena(32bit)</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625203040407.png" alt="image-20210625203040407" style="zoom:50%;" />
+
+<p><strong>Get Arena</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625203114779.png" alt="image-20210625203114779" style="zoom:50%;" />
+
+<p><strong>fastbin</strong></p>
+<p>管理16bytes-64bytes（64位下为32bytes~128bytes）的chunk的单向链表数据结构，由于需要加速程序执行速度的原因，linux对于fastbin的检查较为松散，因此利用起来也较为方便。</p>
+<ul>
+<li><p>单向链表 </p>
+</li>
+<li><ul>
+<li>特点：快</li>
+<li>释放后的chunk插入fastbin表头</li>
+<li>只使用fd指针，bk指针，pre_size,p bit无效</li>
+</ul>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625203309172.png" alt="image-20210625203309172" style="zoom:50%;" />
+
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625203322743.png" alt="image-20210625203322743" style="zoom:40%;" />
+
+<p><strong>unsorted_bin</strong></p>
+<ul>
+<li><p>malloc() </p>
+</li>
+<li><ul>
+<li><p>如果搜索到unsorted_bin，对它管理的chunk一一处理      </p>
+</li>
+<li><ul>
+<li>把chunk归放到small/large  bin（唯一增加small/large bin的地方）</li>
+<li>如果长度刚好满足要求，就返回chunk并结束搜索</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>free() </p>
+</li>
+<li><ul>
+<li><p>如果free的chunk不能放到fastbin，就放到unsorted_bin。</p>
+</li>
+<li><p>向前面的空闲的chunk合并 </p>
+</li>
+<li><ul>
+<li>通过检查p bit</li>
+</ul>
+</li>
+<li><p>向后面的空闲的chunk合并 </p>
+</li>
+<li><ul>
+<li>通过检查它后一个chunk p       bit</li>
+</ul>
+</li>
+<li><p>设置fd，bk指针，后一个chunk的prev_size,p  bit</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Small-bins</strong></p>
+<p>small-bins特点：</p>
+<ul>
+<li><p>malloc() </p>
+</li>
+<li><ul>
+<li>如果找到对应长度的chunk，则直接返回</li>
+</ul>
+</li>
+<li><p>free() </p>
+</li>
+<li><ul>
+<li>不会直接把chunk放进small-bin</li>
+</ul>
+</li>
+<li><p>fd/bk被设置 </p>
+</li>
+<li><ul>
+<li>当chunk从unsorted_bin删除时。</li>
+</ul>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625203558989.png" alt="image-20210625203558989" style="zoom:50%;" />
+
+<p><strong>Large-bins</strong></p>
+<ul>
+<li><p>malloc() </p>
+</li>
+<li><ul>
+<li><p>如果large-bin被搜索到 </p>
+</li>
+<li><ul>
+<li>寻找满足要求的最小chunk</li>
+<li>或者分裂大chunk，一份返回给用户，一份加入到unsorted_bin</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>free() </p>
+</li>
+<li><ul>
+<li>不会直接放到large-bin</li>
+</ul>
+</li>
+<li><p>fd/bk, fd_nextsize/bk_nextsize 被设置 </p>
+</li>
+<li><ul>
+<li>当其从unsorted_bin删除时。</li>
+</ul>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625203631401.png" alt="image-20210625203631401" style="zoom:50%;" />
+
+<p><strong>top chunk</strong></p>
+<p>初次malloc()后，没有被分出去的堆。</p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625203756685.png" alt="image-20210625203756685" style="zoom:50%;" />
+
+<p><strong>malloc过程</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625203823867.png" alt="image-20210625203823867" style="zoom:50%;" />
+
+<ul>
+<li><p>检查长度是否符合fastbin的范围，如果在其中找到，则     </p>
+</li>
+<li><ul>
+<li>将其从单链表删除</li>
+<li>更新fd指针</li>
+</ul>
+</li>
+<li><p>检查长度是否符合smallbins的范围，如果在其中找到，则     </p>
+</li>
+<li><ul>
+<li>从双向链表中删除</li>
+<li>更新fd/bk指针</li>
+</ul>
+</li>
+<li><p>如果尝试分配长度很大的chunk，不直接搜索large-bin，而是进行chunk整理     </p>
+</li>
+<li><ul>
+<li>把fastbin放到unsorted_bin中</li>
+<li>更新下一个chunk的prev_size和p      bit</li>
+<li>合并空闲堆快</li>
+</ul>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625203848532.png" alt="image-20210625203848532" style="zoom:50%;" />
+
+<ul>
+<li><p>在unsorted_bin中搜索 </p>
+</li>
+<li><ul>
+<li>如果last_reminder      cache足够大，就分一块出来</li>
+<li>如果找到合适大小的chunk就返回</li>
+<li>对于搜索的每个chunk，将其按照范围放进small/large      bins</li>
+</ul>
+</li>
+<li><p>更新fd/bk指针</p>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625203902464.png" alt="image-20210625203902464" style="zoom:50%;" />
+
+<ul>
+<li><p>在small/large中搜索 </p>
+</li>
+<li><ul>
+<li><p>在最小的非空small/large      bin中找到足够大的chunk </p>
+</li>
+<li><ul>
+<li>unlink，split</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625203923167.png" alt="image-20210625203923167" style="zoom:50%;" />
+
+<ul>
+<li><p>从TOP chunk中获取内存 </p>
+</li>
+<li><ul>
+<li>如果top      chunk足够大，就分一部分出来</li>
+<li>如果没有fastbin就从系统获取内存</li>
+<li>再次整理fastbin和unsorted_bin</li>
+</ul>
+</li>
+</ul>
+<p><strong>free</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625203941475.png" alt="image-20210625203941475" style="zoom:50%;" />
+
+<ul>
+<li><p>检查元数据的安全性 </p>
+</li>
+<li><ul>
+<li>e.g. :      ptr-&gt;fd-&gt;bk == ptr</li>
+</ul>
+</li>
+<li><p>如果大小在fastbin范围内就放到fastbin里面     </p>
+</li>
+<li><ul>
+<li>更新fastbin，fd</li>
+</ul>
+</li>
+<li><p>合并前一个free状态的chunk </p>
+</li>
+<li><ul>
+<li>unlink</li>
+</ul>
+</li>
+<li><p>合并后一个free状态的chunk </p>
+</li>
+<li><ul>
+<li>unlink，top</li>
+</ul>
+</li>
+</ul>
+<p><strong>unlink</strong></p>
+<ul>
+<li>从链表中删除结点，并更新BK/FD</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625204020527.png" alt="image-20210625204020527" style="zoom:50%;" />
+
+<p>#define unlink(p,BK,FD)<br> {<br>   FD = p -&gt; fd;<br>   BK = p -&gt; bk;<br>   FD -&gt; bk = BK;<br>   BK -&gt; fd = FD;<br> }</p>
+<p><strong>什么时候进行unlink</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625204048786.png" alt="image-20210625204048786" style="zoom:50%;" />
+
+<ul>
+<li><p>free chunk从双向链表中被取出     </p>
+</li>
+<li><ul>
+<li>一种情况：与它物理相邻的堆块合并</li>
+<li>另一种情况：回应系统的分配请求</li>
+</ul>
+</li>
+<li><p>如果空闲堆块被损害？</p>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625204119490.png" alt="image-20210625204119490" style="zoom:50%;" />
+
+<p><strong>当chunk被unlink时</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625204132422.png" alt="image-20210625204132422" style="zoom:50%;" />
+
+<p><strong>main_areana 地址</strong></p>
+<ul>
+<li>运行时libc基地址</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625204159171.png" alt="image-20210625204159171" style="zoom:50%;" />
+
+<p>编译时确定的main_arena的偏移</p>
+<p><img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625204227122.png" alt="image-20210625204227122"></p>
+<p>运行时main_arena的地址</p>
+<p>0xf7e16000 + 0x001BA420= 0xf7fd0420</p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625204302602.png" alt="image-20210625204302602" style="zoom:50%;" />
+
+<p><strong>main_arena内容</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625204321373.png" alt="image-20210625204321373" style="zoom:50%;" />
+
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625204358309.png" alt="image-20210625204358309" style="zoom:50%;" />
+
+<ul>
+<li><p>free()和malloc()依赖于元数据(chunk的头部信息)来     </p>
+</li>
+<li><ul>
+<li>遍历      bins/lists/chunks</li>
+<li>将内存返回给用户</li>
+</ul>
+</li>
+<li><p>但是这些元数据没有很好的保护 </p>
+</li>
+<li><ul>
+<li>堆溢出，use-after-free</li>
+</ul>
+</li>
+</ul>
+<p><strong>堆溢出利用</strong></p>
+<p><strong>Glibc：Chunk In Use</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625204532029.png" alt="image-20210625204532029" style="zoom:50%;" />
+
+<ul>
+<li><p>prev_size 区域 </p>
+</li>
+<li><ul>
+<li>属于前一个chunk</li>
+<li>如果前一个chunk是free状态（并且不在fastbin）就会被设置</li>
+</ul>
+</li>
+<li><p>prev_in_use </p>
+</li>
+<li><ul>
+<li>若前一个chunk是free状态（并且不在fastbin）则置0</li>
+</ul>
+</li>
+<li><p>is_mmaped </p>
+</li>
+<li><ul>
+<li>是否是通过mmap()产生的</li>
+</ul>
+</li>
+<li><p>non_main_arena</p>
+</li>
+</ul>
+<p><strong>Glibc:被释放的chunk</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625204722491.png" alt="image-20210625204722491" style="zoom:50%;" />
+
+<ul>
+<li>下一个chunk的prev_size 这个free chunk的长度</li>
+<li>下一个chunk的prev_in_use 为0</li>
+<li>但是 如果这个被释放的chunk在fastbin，这些东西就不会被设置</li>
+<li>这个 chunk 是否属于一个线程的     arena</li>
+</ul>
+<p><strong>堆溢出</strong></p>
+<ul>
+<li><p>基本上与栈溢出基本类似</p>
+</li>
+<li><p>栈溢出的目标 </p>
+</li>
+<li><ul>
+<li>返回地址</li>
+<li>保存在栈帧的指针</li>
+<li>局部函数变量</li>
+<li>异常句柄</li>
+<li>其他敏感数据</li>
+</ul>
+</li>
+<li><p>堆溢出的目标 </p>
+</li>
+<li><ul>
+<li>堆的元数据</li>
+<li>对象中的函数指针</li>
+<li>对象中的vtable指针</li>
+<li>其他敏感数据</li>
+</ul>
+</li>
+</ul>
+<p><strong>例子</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">	<span class="function">struct <span class="title">toystr</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in"><span class="keyword">void</span></span> (* message)(<span class="keyword">char</span> *);</span><br><span class="line">    <span class="keyword">char</span> buffer[<span class="number">20</span>];</span><br><span class="line">&#125;</span><br><span class="line">	coolguy = <span class="built_in">malloc</span>(<span class="built_in"><span class="keyword">sizeof</span></span>(struct toystr))</span><br><span class="line">	lameguy = <span class="built_in">malloc</span>(<span class="built_in"><span class="keyword">sizeof</span></span>(struct toystr))</span><br><span class="line">	coolguy -&gt; message = &amp;print_cool;</span><br><span class="line">	lameguy -&gt; message = &amp;print_meh;</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;Input coolguy&#x27;s name:&quot;</span>);</span><br><span class="line">	<span class="built_in">fgets</span>(coolguy-&gt;fuffer,<span class="number">200</span>,stdin);</span><br><span class="line">	coolguy-&gt;buffer[<span class="built_in">strcspn</span>(coolguy-&gt;buffer,<span class="string">&quot;\n&quot;</span>)] = <span class="number">0</span>;</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;Input lameguy&#x27;s name:&quot;</span>);</span><br><span class="line">	<span class="built_in">fgets</span>(coolguy-&gt;fuffer,<span class="number">200</span>,stdin);</span><br><span class="line">	coolguy-&gt;buffer[<span class="built_in">strcspn</span>(coolguy-&gt;buffer,<span class="string">&quot;\n&quot;</span>)] = <span class="number">0</span>;</span><br><span class="line">	coolguy-&gt;<span class="built_in">message</span>(coolguy-&gt;buffer);</span><br><span class="line">	lameguy-&gt;<span class="built_in">message</span>(lameguy-&gt;buffer);</span><br></pre></td></tr></table></figure>
+
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625205042187.png" alt="image-20210625205042187" style="zoom:50%;" />
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">coolguy = <span class="built_in">malloc</span>(<span class="built_in"><span class="keyword">sizeof</span></span>(struct toystr))</span><br><span class="line">lameguy = <span class="built_in">malloc</span>(<span class="built_in"><span class="keyword">sizeof</span></span>(struct toystr))</span><br><span class="line">coolguy -&gt; message = &amp;print_cool;</span><br><span class="line">lameguy -&gt; message = &amp;print_meh;</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">&quot;Input coolguy&#x27;s name:&quot;</span>);</span><br><span class="line"><span class="built_in">fgets</span>(coolguy-&gt;fuffer,<span class="number">200</span>,stdin);</span><br><span class="line">coolguy-&gt;buffer[<span class="built_in">strcspn</span>(coolguy-&gt;buffer,<span class="string">&quot;\n&quot;</span>)] = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">&quot;Input lameguy&#x27;s name:&quot;</span>);</span><br><span class="line"><span class="built_in">fgets</span>(coolguy-&gt;fuffer,<span class="number">200</span>,stdin);</span><br><span class="line">coolguy-&gt;buffer[<span class="built_in">strcspn</span>(coolguy-&gt;buffer,<span class="string">&quot;\n&quot;</span>)] = <span class="number">0</span>;</span><br><span class="line">coolguy-&gt;<span class="built_in">message</span>(coolguy-&gt;buffer);</span><br><span class="line">lameguy-&gt;<span class="built_in">message</span>(lameguy-&gt;buffer);<span class="comment">//&lt;--------被溢出覆盖的函数指针</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>堆溢出有什么其他的利用方法？ </p>
+</li>
+<li><ul>
+<li>对象中的函数指针</li>
+<li>管理堆的元数据</li>
+<li>VTable指针</li>
+</ul>
+</li>
+</ul>
+<p><strong>溢出一个正在被使用的chunk</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625205135042.png" alt="image-20210625205135042" style="zoom:50%;" />
+
+<ul>
+<li><p>溢出 p bit（prev_in_use） </p>
+</li>
+<li><ul>
+<li><p>从0改变成1 </p>
+</li>
+<li><ul>
+<li>当这个chunk被free，前一个chunk不会被合并</li>
+<li>note：只有被free的chunk比fast-bin-size大时才会发生合并操作</li>
+</ul>
+</li>
+<li><p>从1改变成0 </p>
+</li>
+<li><ul>
+<li>当这个chunk被free时，前一个chunk会被合并</li>
+<li>Q1:前一个”free”状态chunk的大小？</li>
+<li>Q2:什么时候会发生合并？</li>
+<li>如果合并的free       chunk接下来被分配给其他对象，那么两个不同的对象会共享同一段内存</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>溢出 N bit（non_main_arena） </p>
+</li>
+<li><ul>
+<li><p>从0改变成1 </p>
+</li>
+<li><ul>
+<li>会标志其为non_main_arena，切换arena</li>
+<li>当这个chunk被释放，将会被添加到fastbin或者unsorted_bin</li>
+<li>指向fastbin/unsorted_bin的指针会更新</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>溢出一个free chunk</strong></p>
+<ul>
+<li><p>溢出 P bit     （prev_in_use） </p>
+</li>
+<li><ul>
+<li><p>从1改变成0 </p>
+</li>
+<li><ul>
+<li>Q1：如果被分配给对象，P bit会被堆管理器纠正吗？</li>
+<li>Q2:如果这个chunk被其他free chunk合并了呢？<br>e.g.：该free chunk之后的chunk被释放，其会尝试向前面的chunk合并，得到一个非预期大小的free chunk</li>
+<li>这个free       chunk可以在稍后分配新的对象，新的对象会和前面的chunk共享内存</li>
+<li>Q3:如果这个chunk在bins之间移动？</li>
+</ul>
+</li>
+<li><p>从0改变成1，前面的free      chunk将不会被合并</p>
+</li>
+<li><p>被释放的堆快由arena/fastbin追踪记录</p>
+</li>
+<li><p>被释放的堆快可以在稍后分配给新的对象，或者被新的free chunk合并，或者按照 fastbin-&gt;unsorted_bin-&gt;smallbin/largebin的顺序移动    </p>
+</li>
+</ul>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625205424699.png" alt="image-20210625205424699" style="zoom:50%;" />
+
+<ul>
+<li><p>溢出 size 区域 </p>
+</li>
+<li><ul>
+<li>如果该chunk被分配？</li>
+<li>如果该chunk被物理相邻的chunk合并？</li>
+<li>如果这个chunk在bins间移动？</li>
+</ul>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625205445914.png" alt="image-20210625205445914" style="zoom:50%;" />
+
+<ul>
+<li><p>溢出 fd/bk指针 </p>
+</li>
+<li><ul>
+<li>产生 unlink 问题</li>
+</ul>
+</li>
+<li><p>溢出 prev_size 区域 </p>
+</li>
+<li><ul>
+<li><p>如果缩小prev_size </p>
+</li>
+<li><ul>
+<li><p>当下一个chunk被释放时，会发生什么？       </p>
+</li>
+<li><ul>
+<li>会尝试合并当前chunk（的一部分）</li>
+<li>当前chunk（的一部分）将被unlink，导致unlink操作到假的fd/bk指针，并且当前        free chunk和合并的chunk重叠。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>如果放大prev_size </p>
+</li>
+<li><ul>
+<li><p>当下一个chunk被释放时，会发生什么？       </p>
+</li>
+<li><ul>
+<li>会尝试合并当前chunk（大于实际）</li>
+<li>（大于实际）的当前堆快将被unlink，导致unlink操作到假的fd/bk指针，并且前面（正在使用）的chunk会和新合并的free        chunk共享内存</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>溢出TOP chunk的size区域</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625205532518.png" alt="image-20210625205532518" style="zoom:50%;" />
+
+<ul>
+<li><p>缩小size </p>
+</li>
+<li><ul>
+<li>浪费内存</li>
+</ul>
+</li>
+<li><p>放大size </p>
+</li>
+<li><ul>
+<li>新的分配请求总是能被TOP      chunk满足</li>
+<li>这个（比实际大的）TOP      chunk可以覆盖包括 code/data,e.g.,got表，那么任意地址都可以被分配请求返回</li>
+</ul>
+</li>
+</ul>
+<p><strong>防御堆溢出</strong></p>
+<ul>
+<li><p>cookie </p>
+</li>
+<li><ul>
+<li>与StackGuard/GS（在返回地址附近插入cookie）类似，我们可以在堆对象附近插入cookie。</li>
+</ul>
+</li>
+<li><p>但是 </p>
+</li>
+<li><ul>
+<li><p>运行时开销非常大</p>
+</li>
+<li><p>没有一个好的时间节点进行cookie检查：      </p>
+</li>
+<li><ul>
+<li>对于栈，在函数返回时进行检查</li>
+<li>对于堆，一个还算合理的适当malloc/free被调用时进行检查，但其可能无法对被损害的对象进行操作。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Use-After-Free (UAF)</strong></p>
+<ul>
+<li><p>漏洞 </p>
+</li>
+<li><ul>
+<li>被释放的内存被再次释放？</li>
+<li>被释放的内存被损坏？</li>
+</ul>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625205716558.png" alt="image-20210625205716558" style="zoom:50%;" />
+
+<ul>
+<li>攻击<ul>
+<li>最常见的UAF攻击：VTable Hijacking</li>
+</ul>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625205758688.png" alt="image-20210625205758688" style="zoom:50%;" />
+
+<p><strong>UAF vulnerability(MS12-063)</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625205915719.png" alt="image-20210625205915719" style="zoom:50%;" />
+
+<p><strong>UAF vulnerability(MS12-063)</strong><img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625205933444.png" style="zoom:50%;" /></p>
+<p><strong>动态分配的VTable(c++)</strong></p>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625205958106.png" alt="image-20210625205958106" style="zoom:50%;" />
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(Base2* obj)</span></span>&#123;</span><br><span class="line">    obj-&gt;<span class="built_in">vg4</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    Base2* obj = <span class="keyword">new</span> <span class="built_in">Sub</span>();</span><br><span class="line">    <span class="built_in">foo</span>(obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">code section</span><br><span class="line">; Function main()</span><br><span class="line">push SIZE</span><br><span class="line">call malloc()</span><br><span class="line">mov ecx, eax</span><br><span class="line">call Sub::Sub()</span><br><span class="line">; now ECX points to the Sub object</span><br><span class="line">add ecx, 8</span><br><span class="line">; now ECX points to the Sub::Base2 object</span><br><span class="line">call foo()</span><br><span class="line">ret</span><br><span class="line">; Function foo()</span><br><span class="line">mov eax, [ecx]      ; read vfptr of Base2</span><br><span class="line">mov edx, [eax+0x0C] ; get vg4() from vtable</span><br><span class="line">call edx            ; call Base2::vg4()</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
+
+<p><strong>VTable Hijacking 分类</strong></p>
+<ul>
+<li><p>损坏VTable </p>
+</li>
+<li><ul>
+<li>覆盖VTable</li>
+</ul>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625210119072.png" alt="image-20210625210119072" style="zoom:50%;" />
+
+<ul>
+<li><p>VTable注入 </p>
+</li>
+<li><ul>
+<li>覆盖vfptr</li>
+<li>指向假的VTable</li>
+</ul>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625210150396.png" alt="image-20210625210150396" style="zoom:50%;" />
+
+<ul>
+<li><p>VTable重用 </p>
+</li>
+<li><ul>
+<li>覆盖vfptr</li>
+<li>指向包括VTable，数据等</li>
+</ul>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625210205114.png" alt="image-20210625210205114" style="zoom:50%;" />
+
+<p><strong>VTable Hijacking 实战</strong></p>
+<ul>
+<li>Pwn2Own 2014  firefox</li>
+<li>Pwn2Own 2014  chrome</li>
+<li>CVE-2014-1772   IE</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">code section</span><br><span class="line">; Function main()</span><br><span class="line">push SIZE</span><br><span class="line">call malloc()</span><br><span class="line">mov ecx, eax</span><br><span class="line">call Sub::Sub()</span><br><span class="line">; now ECX points to the Sub object</span><br><span class="line">add ecx, 8</span><br><span class="line">; now ECX points to the Sub::Base2 object</span><br><span class="line">call foo()</span><br><span class="line">ret</span><br><span class="line">; Function foo()</span><br><span class="line">mov eax, [ecx]      ; read vfptr of Base2</span><br><span class="line">mov edx, [eax+0x0C] ; get vg4() from vtable</span><br><span class="line">call edx            ; call Base2::vg4()</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
+
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625210304071.png" alt="image-20210625210304071" style="zoom:50%;" />
+
+<p><strong>防御VTable Hijacking</strong></p>
+<p><strong>VTint</strong></p>
+<table>
+<thead>
+<tr>
+<th><strong>-</strong></th>
+<th><strong>Attack</strong></th>
+<th><strong>Requirement</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VTable  破坏</td>
+<td>覆盖  VTable</td>
+<td>VTable可写</td>
+</tr>
+<tr>
+<td>VTable  注入</td>
+<td>覆盖vfptr，指向被注入的VTable</td>
+<td>VTable可写</td>
+</tr>
+<tr>
+<td>VTable  重用</td>
+<td>覆盖vfptr，指向包括VTable，数据</td>
+<td>形似VTable的数据，包括VTable</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th><strong>-</strong></th>
+<th><strong>Attack</strong></th>
+<th><strong>Requirement</strong></th>
+<th><strong>解决方案</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VTable  破坏</td>
+<td>覆盖  VTable</td>
+<td>VTable可写</td>
+<td>VTable只读</td>
+</tr>
+<tr>
+<td>VTable  注入</td>
+<td>覆盖vfptr，指向被注入的VTable</td>
+<td>VTable可写</td>
+<td>VTable只读</td>
+</tr>
+<tr>
+<td>VTable  重用</td>
+<td>覆盖vfptr，指向包括VTable，数据</td>
+<td>形似VTable的数据，包括VTable</td>
+<td>不同的VTable/数据</td>
+</tr>
+</tbody></table>
+<p><strong>VTint vs. DEP</strong></p>
+<table>
+<thead>
+<tr>
+<th><strong>-</strong></th>
+<th><strong>VTint</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VTable  破坏</td>
+<td>VTable只读</td>
+</tr>
+<tr>
+<td>VTable  注入</td>
+<td>VTable只读</td>
+</tr>
+<tr>
+<td>VTable  重用</td>
+<td>不同的VTable/数据</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th><strong>-</strong></th>
+<th><strong>DEP</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VTable  破坏</td>
+<td>只读的代码段</td>
+</tr>
+<tr>
+<td>VTable  注入</td>
+<td>只读的代码段(可写的段不会被执行)</td>
+</tr>
+<tr>
+<td>VTable  重用</td>
+<td>NO</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>与DEP的相同之处 </p>
+</li>
+<li><ul>
+<li>轻量级，可以是二进制可兼容的。</li>
+</ul>
+</li>
+<li><p>不同 </p>
+</li>
+<li><ul>
+<li>加固后，可攻击面更小</li>
+</ul>
+</li>
+</ul>
+<p><strong>二进制级防护：vfGuard</strong></p>
+<p>NDSS’15: Dynamic binary instrumentation</p>
+<p>- 在运行时检查虚拟调用指令（使用PIN）</p>
+<p>- 针对指令使用不同策略</p>
+<ul>
+<li><p>优势 </p>
+</li>
+<li><ul>
+<li>易于扩展，去执行不同策略</li>
+</ul>
+</li>
+<li><p>劣势 </p>
+</li>
+<li><ul>
+<li>开销大（PIN的开销*118%）</li>
+<li>无法防御VTables重用攻击</li>
+</ul>
+</li>
+</ul>
+<p><strong>源代码级防护：vfGuard</strong></p>
+<ul>
+<li><p>Microsoft IE10,     Core Objects </p>
+</li>
+<li><ul>
+<li>在VTable结束地方的特殊cookies</li>
+</ul>
+</li>
+<li><p>优势 </p>
+</li>
+<li><ul>
+<li>轻量级</li>
+</ul>
+</li>
+<li><p>劣势 </p>
+</li>
+<li><ul>
+<li>只防御核心对象Core      Objects</li>
+<li>不能应付VTable注入</li>
+<li>信息泄漏</li>
+</ul>
+</li>
+</ul>
+<img src="C:\Users\86153\AppData\Roaming\Typora\typora-user-images\image-20210625210454607.png" alt="image-20210625210454607" style="zoom:50%;" />
+
+<p><strong>源代码级防护：SafeDispatch</strong></p>
+<ul>
+<li><p>NDSS’14, LLVM-based     </p>
+</li>
+<li><ul>
+<li>静态计算一系列合法目标</li>
+<li>根据计算结果进行动态验证</li>
+</ul>
+</li>
+<li><p>策略1: VTable Check </p>
+</li>
+<li><ul>
+<li><p>劣势： </p>
+</li>
+<li><ul>
+<li>编译阶段需要耗费大量时间去分析</li>
+<li>高运行时开销（~30%）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>策略2: moethod Check </p>
+</li>
+<li><ul>
+<li><p>劣势： </p>
+</li>
+<li><ul>
+<li>编译阶段需要耗费大量时间去分析</li>
+<li>高运行时开销（~7%）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>源代码级防护：Forward Edge CFI</strong></p>
+<ul>
+<li><p>GCC-VTV     [Usenix’14], whitelist-based</p>
+<p>- 在编译阶段计算一组不完整的合法目标<br>- 在加载是通过初始化函数合并不完整的数据<br>- 在运行时检验是否合法</p>
+</li>
+<li><p>优势 </p>
+</li>
+<li><ul>
+<li>支持增量构建</li>
+</ul>
+</li>
+<li><p>劣势 </p>
+</li>
+<li><ul>
+<li>运行时操作繁琐</li>
+</ul>
+</li>
+</ul>
+<p><strong>源代码级别的防护：RockJIT</strong></p>
+<ul>
+<li><p>CCS’15, CFI-based </p>
+</li>
+<li><ul>
+<li>在编译阶段收集类型信息</li>
+<li>根据收集到的信息计算加载时转移目标的等价类别</li>
+<li>更新CFI检查，在加载时只允许间接传输到一个等价类</li>
+</ul>
+</li>
+<li><p>优势 </p>
+</li>
+<li><ul>
+<li>支持增量构造</li>
+</ul>
+</li>
+<li><p>劣势 </p>
+</li>
+<li><ul>
+<li>加载时开销大</li>
+</ul>
+</li>
+</ul>
+<p>头疼≧ ﹏ ≦~~~</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/25/%E5%B7%A5%E5%85%B7/" rel="prev" title="">
+                  <i class="fa fa-chevron-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/06/25/ctfpwn3/" rel="next" title="">
+                   <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FBC</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
